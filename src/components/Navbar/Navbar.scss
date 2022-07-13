@@ -1,0 +1,30 @@
+.Nav {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+
+  &__list {
+    list-style: none;
+    display: inline-flex;
+    column-gap: 32px;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__link {
+    text-decoration: none;
+    color: #1d1f22;
+    border-bottom: transparent 2px solid;
+    transition:
+      border-bottom ease-in-out 0.5s,
+      color ease-in-out 0.5s;
+    padding: 24px 0;
+
+    &:hover {
+      color: #5ece7b;
+      font-weight: 600;
+      border-bottom-color: #5ece7b;
+    }
+  }
+}

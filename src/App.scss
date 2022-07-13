@@ -1,0 +1,44 @@
+.App {
+  text-align: center;
+
+  font-family: 'Raleway', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+
+  color: #1d1f22;
+
+  &__header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    padding: 24px 118px;
+  }
+
+  &__main {
+    margin-top: 174px;
+    padding: 0 100px;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__heading {
+    font-size: 42px;
+    margin-bottom: 120px;
+    text-align: left;
+  }
+
+  &__products {
+    display: flex;
+    column-gap: 56px;
+    row-gap: 120px;
+    flex-wrap: wrap;
+  }
+}
