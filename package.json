@@ -1,5 +1,6 @@
 {
   "name": "react_e-commerce-test-task",
+  "homepage": "https://mabuzam.github.io/react_e-commerce-test-task",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -26,6 +27,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "react-scripts deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
