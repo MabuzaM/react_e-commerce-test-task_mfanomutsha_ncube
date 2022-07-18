@@ -1,0 +1,19 @@
+.CartButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 32px;
+  background: #5ece7b;
+  color: #fff;
+  font-weight: 600;
+  line-height: 120%;
+  text-transform: uppercase;
+  border: none;
+  width: 100%;
+
+  &:hover {
+    background-color: #80df9a;
+    cursor: pointer;
+  }
+}

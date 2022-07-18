@@ -30,18 +30,22 @@ export class Navbar extends React.PureComponent {
           </ul>
         </nav>
 
-        <a href="/" className="Header__logo">
+        <a href="/" className="Nav__logo">
           <img src={logo} alt="a logo" />
         </a>
 
-        <article className="Header__controls">
-          <select name="currency" id="currency">
-            <option value="$">$</option>
-            <option value="$">$</option>
-            <option value="$">$</option>
+        <article className="Nav__controls">
+          <select
+            name="currency"
+            id="currency"
+            className="Nav__currency-switcher"
+          >
+            <option value="$">&#36; USD</option>
+            <option value="€">&euro; EUR</option>
+            <option value="¥">&yen; JPY</option>
           </select>
 
-          <a href="#/" className="Header__cart">
+          <a href="#/" className="Nav__cart">
             <img src={cart} alt="cart" />
           </a>
         </article>

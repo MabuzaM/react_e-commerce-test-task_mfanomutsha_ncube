@@ -1,11 +1,14 @@
 body {
+  width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
 p,
 h2,
-ul {
+h3,
+ul,
+hr {
   margin: 0;
   padding: 0;
 }

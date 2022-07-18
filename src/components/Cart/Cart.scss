@@ -1,0 +1,150 @@
+.Cart {
+  padding: 0 100px 100px;
+
+  &__item {
+    margin-top: 56px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 32px;
+
+    &--value {
+      font-weight: 700;
+    }
+  }
+
+  &__tax,
+  &__quantity,
+  &__total {
+    font-size: 24px;
+    line-height: 28px;
+  }
+}
+
+.Item {
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 27px;
+  }
+
+  &__description {
+    font-size: 30px;
+    line-height: 27px;
+  }
+
+  &__price {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 100%;
+  }
+
+  &__size--title,
+  &__color--title {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 100%;
+  }
+
+  &__size-wraper {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__size--x-small,
+  &__size--small,
+  &__size--medium,
+  &__size--large {
+    border: 1px solid #1d1f22;
+    width: 64px;
+    height: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #1d1f22;
+      color: #fff;
+    }
+  }
+
+  &__color-wraper {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__color--gray,
+  &__color--blue,
+  &__color--red {
+    width: 32px;
+    height: 32px;
+    background-color: gray;
+  }
+
+  &__size,
+  &__color {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 22px;
+  }
+
+  &__extra {
+    display: flex;
+    gap: 24px;
+  }
+
+  &__quantity-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 160%;
+  }
+
+  &__increase,
+  &__decrease {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border: 1px solid #1d1f22;
+    flex-grow: 0;
+    &:hover {
+      background-color: #1d1f22;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+
+  &__image {
+    width: 200px;
+    height: 288px;
+    display: flex;
+  }
+
+  &__photo {
+    object-fit: contain;
+    object-position: center;
+  }
+}

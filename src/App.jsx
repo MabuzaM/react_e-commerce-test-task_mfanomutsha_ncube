@@ -7,6 +7,8 @@ import {
 } from 'react-apollo';
 
 import { ApolloClient, InMemoryCache, HttpLink, from } from 'apollo-boost';
+import { ProductInfo } from './components/ProductInfo/ProductInfo';
+import { Cart } from './components/Cart/Cart';
 
 const link = from(
   [
@@ -38,6 +40,9 @@ function App() {
             <ProductList />
           </div>
         </main>
+        <Cart />
+        {'       '}
+        <ProductInfo />
       </div>
     </ApolloProvider>
   );

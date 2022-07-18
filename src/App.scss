@@ -1,6 +1,4 @@
 .App {
-  text-align: center;
-
   font-family: 'Raleway', sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -17,7 +15,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100vw;
     padding: 24px 118px;
   }
 
@@ -26,7 +23,8 @@
     padding: 0 100px;
 
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 
   &__heading {
