@@ -1,21 +1,13 @@
 import React from 'react';
-import './ProductList.scss';
 import '../ProductCard/ProductCard.scss';
 import { renderProducts } from '../../helpers/helpers';
 
 class ProductList extends React.PureComponent {
-  state = {
-    productId: '',
-    productPrices: [],
-    selectedProduct: null,
-  }
-
-
   constructor(props) {
     super(props)
     props = {
       currency: '$',
-      isInCart: false,
+      cartProducts: null,
       onProductClick: () => undefined,
       products: [],
     };    
@@ -24,15 +16,15 @@ class ProductList extends React.PureComponent {
   render () {
     const {
       currency,
-      isInCart,
       products,
+      cartProducts,
       onProductClick
     } = this.props;
 
     return (renderProducts(
         products,
         currency,
-        isInCart,
+        cartProducts,
         onProductClick,
       ));
   }

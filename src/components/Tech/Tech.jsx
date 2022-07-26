@@ -13,6 +13,7 @@ class Tech extends React.PureComponent {
     super(props)
     props = {
       currency: '$',
+      cartProducts: null,
       onProductClick: () => undefined,
       products: [],
     }
@@ -31,12 +32,13 @@ class Tech extends React.PureComponent {
   render () {
     const {
       currency,
-      onProductClick
+      cartProducts,
+      onProductClick,
     } = this.props;
     const { tech } = this.state;
 
     return (
-      renderProducts(tech, currency, onProductClick)
+      renderProducts(tech, currency, cartProducts, onProductClick)
     );
   }
 }

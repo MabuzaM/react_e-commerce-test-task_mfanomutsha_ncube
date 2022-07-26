@@ -3,13 +3,11 @@ import { generateButton } from '../CartButton/CartButton';
 import './CartOverlay.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
-import { calculateCartTotal } from '../../helpers/helpers';
+import { calculateCartTotal, renderPrice } from '../../helpers/helpers';
 
 export class CartOverlay extends React.PureComponent {
   state = {
-    productId: '',
-    cartItemColorId: '',
-    imgUrlIndex: 0,
+    itemQuant: 0,
     cartProducts: [],
   };
 
@@ -23,23 +21,12 @@ export class CartOverlay extends React.PureComponent {
     };
   }
 
-  slideThroughImages = (operator, gallery) => {
-    if (this.state.imgUrlIndex >= 0 && this.state.imgUrlIndex < gallery.length - 1) {
-      switch(operator) {
-        case '+':
-          this.setState({imgUrlIndex: this.state.imgUrlIndex + 1});
-          break;
-        
-        case '-':
-          this.setState({imgUrlIndex: this.state.imgUrlIndex - 1});
-          break;
-
-        default:;
-      }
-    } else {
-      this.setState({imgUrlIndex: 0});
-    }
-  };
+  componentDidMount() {
+    this.setState({
+      cartProducts: [...this.props.productsInCart],
+      itemQuant: this.state.itemQuant + this.props.quantity,
+    })
+  }
 
   decrementItemCount = (cartItem, itemPrice) => {
     const itemInCart = this.state.cartProducts.find(product => product.id === cartItem.id);
@@ -73,28 +60,16 @@ export class CartOverlay extends React.PureComponent {
     }
   }
 
-
   render () {
-    const {
-      productId,
-      cartItemColorId,
-      itemNumber,
-      imgUrlIndex,
-    } = this.state;
-
     const { 
-      productsInCart, 
+      productsInCart,
       currency,
-      colorId,
-      selectedProductId,
-      itemCount,
-      quantity,
     } = this.props;
 
     return (
         <article className="CartOverlay">
           <h2 className="CartOverlay__title">
-            My Bag, <span className="CartOverlay__title--quantity">{`${quantity} items`}</span>
+            My Bag, <span className="CartOverlay__title--quantity">{`${productsInCart.length} items`}</span>
           </h2>
           <div className="Overlay-Item CartOverlay__item">
             {
@@ -114,7 +89,7 @@ export class CartOverlay extends React.PureComponent {
                       attributes,                   
                     } = product;
 
-                    const itemPrice = prices?.find(price => price.currency.symbol === currency).amount;
+                    const itemPrice = renderPrice(prices, currency);
 
                     return (
                       <>
@@ -137,7 +112,10 @@ export class CartOverlay extends React.PureComponent {
                                       attribute?.items?.map((item) => {
                                         return attribute.name !== 'Color'
                                           ? (<div
-                                            className="Overlay-Item__attribute-other"
+                                            className={cn(
+                                              "Overlay-Item__attribute-other",
+                                              {"Overlay-Item__attribute-other--isActive": product.selectedAttributes[attribute.name] === item.id}
+                                            )}
                                             onClick={() => this.setState({item2Id: item.id})}
                                           >
                                             {item.displayValue}
@@ -146,7 +124,7 @@ export class CartOverlay extends React.PureComponent {
                                             key={item.id}
                                             className={cn(
                                               "Overlay-Item__attribute-color",
-                                              {"Overlay-Item__attribute-color--isActive": this.state.colorId === item.id}
+                                              {"Overlay-Item__attribute-color--isActive": product.selectedColor === item.id}
                                             )}
                                             style={{
                                               backgroundColor: item.value,
@@ -195,7 +173,7 @@ export class CartOverlay extends React.PureComponent {
 
         <div className="CartOverlay__summary">
           <p className="CartOverlay__total">Total:</p>
-          <p className="Cart__summary--value">{calculateCartTotal(productsInCart)}</p>
+          <p className="Cart__summary--value">{` ${currency} ${calculateCartTotal(productsInCart)}`}</p>
         </div>
 
         <div className="CartOverlay__buttons">
@@ -215,7 +193,9 @@ export class CartOverlay extends React.PureComponent {
                       </div>
 
                       <div>
-                        {generateButton('Order')}
+                        <Link to="/order" className="Cart__button-link">
+                          {generateButton('Order')}
+                        </Link>
                       </div>    
                     </>
                   )

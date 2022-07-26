@@ -54,3 +54,7 @@
     flex-wrap: wrap;
   }
 }
+
+.Nav__cart:hover ~ .CartOverlay {
+  display: none;
+}

@@ -10,30 +10,18 @@ import { ApolloProvider } from 'react-apollo';
 import { ProductInfo } from './components/ProductInfo/ProductInfo';
 import { client, PRODUCTS } from '../src/api/api';
 import {Routes, Route, Navigate} from 'react-router-dom';
+import { Order } from './components/Order/Order';
 
 class App extends React.PureComponent {
   state = {
     selectedCurrency: '$',
-    productId: '',
     productInfo: null,
     cartProducts: [],
-    // [
-    //   {
-    //     ...,
-    //     itemCount: 1
-    //   }
-    //   // this.state.cartProducts.find(product => product.id === eventid).itemCount ++ 
-    // ],
     productCount: 0,
     itemCount: 1,
     products: [],
-    colorId: '',
-    item2Id: '',
-    tax: 0,
     quantity: 0,
-    totalAmount: 0,
     isCartHidden: false,
-    isInCart: false,
   }
 
    componentDidMount() {
@@ -78,7 +66,6 @@ class App extends React.PureComponent {
         cartProducts: [...this.state.cartProducts,
           {...this.state.productInfo,
             itemCount: 1,
-            isInCart: true,
             selectedColor: color,
             selectedAttributes: otherAttributes,
             price: price,
@@ -106,23 +93,19 @@ class App extends React.PureComponent {
   render() {
     const {
       selectedCurrency,
-      productCount,
       productInfo,
       cartProducts,
       products,
-      colorId,
-      itemCount,
-      quantity,
-      isInCart,
     } = this.state;
 
     const {
       handleSelectClick,
       handleProductClick,
       handleAddToCartClick,
+      changeCartQuantity,
+      removeItemFromCart,
+      handleColorSelect,
     } = this;
-
-    // console.log(this.state.cartProducts);
 
     return (
       <ApolloProvider client={client}>
@@ -142,11 +125,8 @@ class App extends React.PureComponent {
                   <CartOverlay
                     productsInCart={cartProducts}
                     currency={selectedCurrency}
-                    colorId={colorId}
-                    selectedProductId={productInfo?.id}
-                    itemCount={itemCount}
-                    quantity={quantity}
-                    onChangeItemCount={this.handleChangeItemCount}
+                    changeCartQuantity={changeCartQuantity}
+                    onDeleteItem={removeItemFromCart}
                   />
                 )
             }
@@ -160,7 +140,7 @@ class App extends React.PureComponent {
                       <ProductList
                         products={products}
                         currency={selectedCurrency}
-                        isInCart={isInCart}
+                        cartProducts={cartProducts}
                         onProductClick={handleProductClick}
                       />
                     </div>
@@ -186,6 +166,7 @@ class App extends React.PureComponent {
                     <div className="App__products">
                       <Clothes
                         currency={selectedCurrency}
+                        cartProducts={cartProducts}
                         products={products}
                         onProductClick={handleProductClick}
                       />
@@ -202,13 +183,9 @@ class App extends React.PureComponent {
                     <div className="App__cart">
                       <Cart
                         productsInCart={cartProducts}
-                        productInfo={productInfo}
                         currency={selectedCurrency}
-                        colorId={colorId}
-                        itemCount={itemCount}
-                        quantity={quantity}
-                        changeCartQuantity={this.changeCartQuantity}
-                        onDeleteItem={this.removeItemFromCart}
+                        changeCartQuantity={changeCartQuantity}
+                        onDeleteItem={removeItemFromCart}
                       />
                     </div>
                   </>
@@ -223,6 +200,7 @@ class App extends React.PureComponent {
                     <div className="App__products">
                       <Tech
                         currency={selectedCurrency}
+                        cartProducts={cartProducts}
                         products={products}
                         onProductClick={handleProductClick}
                       />
@@ -239,17 +217,25 @@ class App extends React.PureComponent {
                     selectedProductId={productInfo?.id}
                     currency={selectedCurrency}
                     onAddToCart={handleAddToCartClick}
-                    onColorSelect={this.handleColorSelect}
+                    onColorSelect={handleColorSelect}
                   />
                 }
               />
 
               <Route
+                path='order'
+                element={
+                  <Order
+                    orderItems={cartProducts}
+                    currency={selectedCurrency}
+                  />
+                }              
+              />
+
+              <Route
                 path="*"
                 element={(
-                  <>
-                    <h1 className="App__heading">Page Not Found</h1>
-                  </>
+                  <h1 className="App__heading">Page Not Found</h1>
                 )}
               />
             </Routes>
@@ -258,9 +244,7 @@ class App extends React.PureComponent {
         </div>
       </ApolloProvider>
     );
-  }
-
-  
+  }  
 }
 
 export default App;

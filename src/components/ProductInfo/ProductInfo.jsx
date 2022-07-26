@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProductInfo.scss';
 import '../CartButton/CartButton.scss'
-import { renderAttributes } from '../../helpers/helpers';
+import cn from 'classnames';
 
 export class ProductInfo extends React.PureComponent {
   state = {
@@ -14,11 +14,8 @@ export class ProductInfo extends React.PureComponent {
   constructor(props) {
     super(props)
     props = {
-      products: [],
-      selectedProductId: '',
       currency: "$",
       onAddToCart: () => undefined,
-      onColorSelect: () => undefined,
     }
   }
 
@@ -41,10 +38,8 @@ export class ProductInfo extends React.PureComponent {
 
   render () {
     const {
-      products,
       currency,
       onAddToCart,
-      onColorSelect,
     } = this.props;
 
     const {
@@ -92,14 +87,49 @@ export class ProductInfo extends React.PureComponent {
             {product?.brand}
           </div>
 
-          {
-            renderAttributes(
-              product,
-              colorId,
-              otherAttributesIdSetter,
-              colorIdSetter,
-            )
-          }
+          <div className="Item__attribute">
+            {
+              product?.attributes?.map((attribute) => {
+                return <React.Fragment key={attribute.id}>
+                  <p className="Item__attribute-title" key={attribute.id}>{attribute.name}:</p>
+                  <div className="Item__attribute-wraper">
+                  {
+                    attribute?.items?.map((item) => {
+                      if (attribute.name !== 'Color') {
+                        return <div
+                          className={cn(
+                            "Item__attribute-other",
+                            {"Item__attribute-other--isActive": otherAttributes[attribute.name] === item.id},
+                          )}
+                    
+                          onClick={() => {
+                            otherAttributesIdSetter(attribute.name, item.id)
+                          }}
+                        >
+                          {item.displayValue}
+                        </div>
+                      }
+                        return <div
+                          key={item.id}
+                          className={cn(
+                            "Item__attribute-color",
+                            {"Item__attribute-color--isActive": colorId === item.id}
+                          )}
+                          style={{
+                            backgroundColor: item.value,
+                          }}
+                          onClick={() => {
+                            colorIdSetter(item.id)
+                          }}
+                        >
+                        </div>
+                    })
+                  }
+                  </div>
+                </React.Fragment>
+              })
+            }
+          </div>
 
           <div className="Item__price">
             <p className="Item__price--title">Price:</p>

@@ -21,3 +21,7 @@ li {
   text-decoration: none;
   color: #1d1f22;
 }
+
+.Nav__cart:hover ~ .CartOverlay {
+  display: none;
+}

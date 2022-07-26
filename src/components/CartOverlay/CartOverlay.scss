@@ -1,5 +1,5 @@
 .CartOverlay {
-  transform: translateX(160%);
+  transform: translateX(200%);
   opacity: 1;
   position: absolute;
   top: -68px;
@@ -26,6 +26,7 @@
 
   &__empty-text {
     color: #f00;
+    margin-bottom: 20px;
   }
 
   &__summary {
@@ -47,7 +48,7 @@
   }
 
   &__total {
-    // font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 16px;
@@ -87,6 +88,7 @@
   &__attribute {
     display: flex;
     flex-direction: column;
+    gap: 10px;
 
     &-title {
       font-size: 14px;
@@ -116,6 +118,11 @@
         color: #fff;
         cursor: pointer;
       }
+
+      &--isActive {
+        background-color: #1d1f22;
+        color: #fff;
+      }
     }
 
     &-color {
@@ -126,6 +133,10 @@
       &:hover {
         border-color: #5ece7b;
         cursor: pointer;
+      }
+
+      &--isActive {
+        border-color: #5ece7b;
       }
     }
   }

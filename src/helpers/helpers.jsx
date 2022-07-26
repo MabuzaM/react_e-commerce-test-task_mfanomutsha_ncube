@@ -3,7 +3,11 @@ import React from 'react';
 import cn from 'classnames';
 import InCartIcon from '../icons-svg/InCartIcon.svg';
 
-export const renderProducts = (products, currency, isInCart, stateSetter=() => undefined) => {
+export const renderPrice = (prices, currency) => {
+  return prices?.find(price => price.currency.symbol === currency).amount;
+}
+
+export const renderProducts = (products, currency, productsInCart, stateSetter=() => undefined) => {
   return products.map((product) => {
     const {
       id,
@@ -12,84 +16,54 @@ export const renderProducts = (products, currency, isInCart, stateSetter=() => u
       name,
     } = product;
 
+    const addedToCart = productsInCart?.find(cartProduct => cartProduct.id === product.id)
+    console.log(product.inStock)
     return (
         <div className="ProductCard" key={id}>
           <Link
+            disabled={!product.inStock}
             to={`/productid/:${id}`}
-            className="ProductCard__link"
+            className={cn("ProductCard__link", {"ProductCard__outofstock--disabled": !product.inStock})}
             onClick={() => stateSetter(product, id)}
           >
-            <img src={gallery[Math.floor(Math.random() * gallery.length)]} alt={name} className="ProductCard__image" />
-            <img src={InCartIcon} alt="In cart indicator" className={cn("ProductCard__icon", {
-              "ProductCard__icon--visible": isInCart,
-            })} />
+            <div className="ProductCard__image-wrapper">
+              <img
+                src={gallery[Math.floor(Math.random() * gallery.length)]}
+                alt={name}
+                className="ProductCard__image"
+              />
+              
+              <img
+                src={InCartIcon}
+                alt="In cart indicator"
+                className={cn("ProductCard__icon", {"ProductCard__icon--visible": addedToCart})}
+              />
+            </div>
+            
             <p className="ProductCard__title">
               {name}
             </p>
             <p className="ProductCard__price">
-              {currency}{prices.find(price => price.currency.symbol === currency).amount}
+              {currency}{renderPrice(prices, currency)}
             </p>
           </Link>
+          <div className={cn(
+            "ProductCard__outofstock",
+            {"ProductCard__outofstock--disabled": !product.inStock}
+          )}>
+            <p className="ProductCard__outofstock--text">Out of stock</p>
+          </div>
         </div>
     );
   })
 };
 
-export const renderAttributes = (
-  product,
-  colorId,
-  attributeIdSetter,
-  colorIdSetter,
-) => {
-  return (
-    <div className="Item__attribute">
-    {
-      product?.attributes?.map((attribute) => {
-        return <React.Fragment key={attribute.id}>
-          <p className="Item__attribute-title" key={attribute.id}>{attribute.name}:</p>
-          <div className="Item__attribute-wraper">
-          {
-            attribute?.items?.map((item) => {
-              if (attribute.name !== 'Color') {
-                return <div
-                  className={cn(
-                    "Item__attribute-other",
-                    {"Item__attribute-other--isActive": true},
-                  )}
-            
-                  onClick={() => {
-                    attributeIdSetter(attribute.name, item.id)
-                    console.log(product?.selectedAttributes);
-                  }}
-                >
-                  {item.displayValue}
-                </div>
-              }
-                return <div
-                  key={item.id}
-                  className={cn(
-                    "Item__attribute-color",
-                    {"Item__attribute-color--isActive": colorId === item.id}
-                  )}
-                  style={{
-                    backgroundColor: item.value,
-                  }}
-                  onClick={() => {
-                    colorIdSetter(item.id)
-                  }}
-                >
-                </div>
-            })
-          }
-          </div>
-        </React.Fragment>
-      })
-    }
-  </div>
-  );
-};
-
 export const calculateCartTotal = (productsInCart) => {
   return productsInCart.map(product => product.price)
     .reduce((price1, price2) => price1 + price2, 0).toFixed(2);
+}
+
+export const getItemsTotal = (productsInCart) => {
+  return productsInCart.map(product => product.itemCount)
+    .reduce((productCount1, productCount2) => productCount1 + productCount2, 0).toFixed(2);
 }

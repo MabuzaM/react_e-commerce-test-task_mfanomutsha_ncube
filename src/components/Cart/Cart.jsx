@@ -3,7 +3,7 @@ import { generateButton } from '../CartButton/CartButton';
 import './Cart.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
-import { calculateCartTotal } from '../../helpers/helpers';
+import { calculateCartTotal, renderPrice, getItemsTotal } from '../../helpers/helpers';
 
 export const getItemCount = (newItemCount) => {
   return newItemCount;
@@ -11,12 +11,10 @@ export const getItemCount = (newItemCount) => {
 
 export class Cart extends React.PureComponent {
   state = {
-    productId: '',
-    cartItemColorId: '',
     itemQuant: 0,
     imgUrlIndex: 0,
     cartProducts: [],
-
+    selectedProduct: null,
   };
 
   constructor(props) {
@@ -89,6 +87,8 @@ export class Cart extends React.PureComponent {
   render () {
     const {
       imgUrlIndex,
+      cartProducts,
+      selectedProduct,
     } = this.state;
 
     const { 
@@ -96,15 +96,13 @@ export class Cart extends React.PureComponent {
       currency,
     } = this.props;
 
-    console.log(productsInCart);
-
     return (
       <>
         <article className="Cart">
           <div className="Item Cart__item">
             <hr className="Cart__line"/>
             {
-              this.state.cartProducts.length === 0
+              cartProducts.length === 0
                 ?  (
                       <>
                         <p className="Cart__text">Your cart is empty</p>
@@ -120,8 +118,7 @@ export class Cart extends React.PureComponent {
                       attributes,                
                     } = product;
 
-                    const itemPrice = prices?.find(price => price.currency.symbol === currency).amount;
-
+                    const itemPrice = renderPrice(prices, currency);
                     return (
                       <>
                       <div className="Item__details" key={id}>
@@ -131,7 +128,7 @@ export class Cart extends React.PureComponent {
                           <p className="Item__price">
                             {currency}
                             {
-                              prices && (prices?.find(price => price.currency.symbol === currency).amount)
+                              itemPrice
                             }
                           </p>
             
@@ -147,7 +144,7 @@ export class Cart extends React.PureComponent {
                                         return <div
                                           className={cn(
                                             "Item__attribute-other",
-                                            {"Item__attribute-other--isActive": product.colorId === item.id}
+                                            {"Item__attribute-other--isActive": product.selectedAttributes[attribute.name] === item.id}
                                           )}
                                           onClick={() => this.setState({item2Id: item.id})}
                                         >
@@ -158,7 +155,7 @@ export class Cart extends React.PureComponent {
                                           key={item.id}
                                           className={cn(
                                             "Item__attribute-color",
-                                            {"Item__attribute-color--isActive": product.colorId === item.id}
+                                            {"Item__attribute-color--isActive": product.selectedColor === item.id}
                                           )}
                                           style={{
                                             backgroundColor: item.value,
@@ -197,8 +194,14 @@ export class Cart extends React.PureComponent {
                                   : (gallery[imgUrlIndex])
                               } alt="Item" className="Item__image" />
                               <div className="Item__slider-controls">
-                                <div className="Item__slider-controls--previous" onClick={() => this.slideThroughImages('-', product?.gallery)}>&lt;</div>
-                                <div className="Item__slider-controls--next" onClick={() => this.slideThroughImages('+', product?.gallery)}>&gt;</div>
+                                <div className="Item__slider-controls--previous" onClick={() => {
+                                    this.setState({selectedProduct: product});
+                                    this.slideThroughImages('-', selectedProduct?.gallery);
+                                  }}>&lt;</div>
+                                <div className="Item__slider-controls--next" onClick={() => {
+                                  this.setState({selectedProduct: product});
+                                  this.slideThroughImages('+', selectedProduct?.gallery);
+                                }}>&gt;</div>
                               </div>
                             </div>
                           </div>
@@ -213,19 +216,19 @@ export class Cart extends React.PureComponent {
           <div className="Cart__summary">
             <p className="Cart__tax">Tax 21%: 
               <span className="Cart__summary--value">
-                {` ${((21 / 100) * calculateCartTotal(productsInCart)).toFixed(2)}`}
+                {` ${currency} ${((21 / 100) * calculateCartTotal(productsInCart)).toFixed(2)}`}
               </span>
             </p>
 
             <p className="Cart__quantity">Quantity:
               <span className="Cart__summary--value">
-                {` ${this.state.itemQuant}`}
+                {` ${getItemsTotal(productsInCart)}`}
               </span>
             </p>
 
             <p className="Cart__total">Total: 
               <span className="Cart__summary--value">
-                {` ${calculateCartTotal(productsInCart)}`}
+                {` ${currency} ${calculateCartTotal(productsInCart)}`}
               </span></p>
             {
               productsInCart.length === 0
@@ -234,32 +237,13 @@ export class Cart extends React.PureComponent {
                       {generateButton('Continue shopping')}
                     </Link>
                   )
-                : (generateButton('Order'))
+                : (
+                    <Link to="/order" className="Cart__button-link">
+                      {generateButton('Order')}
+                    </Link>
+                  )
             }
           </div>
-        </article>
-
-        <hr />
-
-        <article className="Order">
-          <table className="Order__table">
-            <thead>
-              <th>Quantity</th>
-              <th>Item</th>
-              <th>Amount</th>
-            </thead>
-            <tbody>
-              {
-                productsInCart.map(product => (
-                  <>
-                    <td>{product.itemCount}</td>
-                    <td>{product.name}</td>
-                    <td>{product.price}</td>
-                  </>
-                ))
-              }
-            </tbody>
-          </table>
         </article>
       </>
     );
