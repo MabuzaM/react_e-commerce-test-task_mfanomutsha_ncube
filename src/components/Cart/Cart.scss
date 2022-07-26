@@ -1,6 +1,6 @@
-.Cart {
-  // padding: 0 100px 100px;
+@import '../../../src/sassVariables';
 
+.Cart {
   &__line {
     margin: 22px 0;
   }
@@ -12,7 +12,7 @@
 
   &__text {
     font-size: 18px;
-    color: #f00;
+    color: $c-red;
     font-weight: 600;
   }
 
@@ -87,11 +87,11 @@
     justify-content: center;
     width: 45px;
     height: 45px;
-    border: 1px solid #1d1f22;
+    border: 1px solid $c-darkGray;
     flex-grow: 0;
     &:hover {
-      background-color: #1d1f22;
-      color: #fff;
+      background-color: $c-darkGray;
+      color: $c-white;
       cursor: pointer;
     }
   }
@@ -127,8 +127,8 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      background-color: #000;
-      color: #fff;
+      background-color: $c-black;
+      color: $c-white;
       width: 24px;
       height: 24px;
 

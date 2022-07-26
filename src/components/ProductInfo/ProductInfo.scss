@@ -1,5 +1,5 @@
+@import '../../../src/sassVariables';
 .ProductInfo {
-  // padding: 0 100px 180px;
   display: flex;
   justify-content: space-between;
 
@@ -87,21 +87,21 @@
     &-color {
       width: 32px;
       height: 32px;
-      border: 1px solid #1d1f22;
+      border: 1px solid $c-darkGray;
       margin-bottom: 16px;
 
       &:hover {
-        border-color: #5ece7b;
+        border-color: $c-accentGreen;
         cursor: pointer;
       }
 
       &--isActive {
-        border-color: #5ece7b;
+        border-color: $c-accentGreen;
       }
     }
 
     &-other {
-      border: 1px solid #1d1f22;
+      border: 1px solid $c-darkGray;
       width: 64px;
       height: 46px;
       display: flex;
@@ -111,13 +111,13 @@
 
       &:hover {
         cursor: pointer;
-        background-color: #1d1f22;
-        color: #fff;
+        background-color: $c-darkGray;
+        color: $c-white;
       }
 
       &--isActive {
-        background-color: #1d1f22;
-        color: #fff;
+        background-color: $c-darkGray;
+        color: $c-white;
       }
     }
   }

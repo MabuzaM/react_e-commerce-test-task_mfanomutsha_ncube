@@ -1,16 +1,26 @@
+@import '../../../src/sassVariables';
+
 .CartOverlay {
-  transform: translateX(200%);
-  opacity: 1;
+  opacity: 0;
+  visibility: hidden;
   position: absolute;
+  display: none;
   top: -68px;
-  right: 200px;
-  display: flex;
-  flex-direction: column;
+  right: 100px;
   padding: 32px 16px;
   z-index: 5;
   width: 326px;
-  background-color: #fff;
-  box-shadow: 1px 3px 8px #000;
+  background-color: $c-white;
+  box-shadow: 1px 3px 8px $c-black;
+  transition: opacity ease-in-out 0.5s,
+    visibility ease-in-out 0.5s;
+
+  &__visible {
+    opacity: 1;
+    visibility: visible;
+    display: flex;
+    flex-direction: column;
+  }
 
   &__title {
     font-weight: 700;
@@ -111,32 +121,32 @@
       align-items: center;
       width: 24px;
       height: 24px;
-      border: solid 1px #1d1f22;
+      border: solid 1px $c-darkGray;
 
       &:hover {
-        background-color: #1d1f22;
-        color: #fff;
+        background-color: $c-darkGray;
+        color: $c-white;
         cursor: pointer;
       }
 
       &--isActive {
-        background-color: #1d1f22;
-        color: #fff;
+        background-color: $c-darkGray;
+        color: $c-white;
       }
     }
 
     &-color {
       width: 16px;
       height: 16px;
-      border: solid 1px #1d1f22;
+      border: solid 1px $c-darkGray;
 
       &:hover {
-        border-color: #5ece7b;
+        border-color: $c-mainGreen;
         cursor: pointer;
       }
 
       &--isActive {
-        border-color: #5ece7b;
+        border-color: $c-mainGreen;
       }
     }
   }
@@ -166,11 +176,11 @@
     justify-content: center;
     width: 24px;
     height: 24px;
-    border: 1px solid #1d1f22;
+    border: 1px solid $c-darkGray;
     flex-grow: 0;
     &:hover {
-      background-color: #1d1f22;
-      color: #fff;
+      background-color: $c-darkGray;
+      color: $c-white;
       cursor: pointer;
     }
   }

@@ -17,7 +17,7 @@ export const renderProducts = (products, currency, productsInCart, stateSetter=(
     } = product;
 
     const addedToCart = productsInCart?.find(cartProduct => cartProduct.id === product.id)
-    console.log(product.inStock)
+
     return (
         <div className="ProductCard" key={id}>
           <Link

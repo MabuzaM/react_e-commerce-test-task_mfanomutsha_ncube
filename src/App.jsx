@@ -11,6 +11,7 @@ import { ProductInfo } from './components/ProductInfo/ProductInfo';
 import { client, PRODUCTS } from '../src/api/api';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import { Order } from './components/Order/Order';
+import cn from 'classnames';
 
 class App extends React.PureComponent {
   state = {
@@ -21,7 +22,7 @@ class App extends React.PureComponent {
     itemCount: 1,
     products: [],
     quantity: 0,
-    isCartHidden: false,
+    isCartVisible: false,
   }
 
    componentDidMount() {
@@ -42,8 +43,16 @@ class App extends React.PureComponent {
     }
   }
 
-   handleSelectClick = (event) => {
+  handleSelectClick = (event) => {
     this.setState({selectedCurrency: event.target.value});
+  }
+
+  handleShowCartOverlay = () => {
+    this.setState({isCartVisible: !this.state.isCartVisible});
+  }
+
+  handleHideCartOverlay = () => {
+    this.setState({isCartVisible: false});
   }
 
   handleProductClick = (selectedProduct) => {
@@ -96,6 +105,7 @@ class App extends React.PureComponent {
       productInfo,
       cartProducts,
       products,
+      isCartVisible,
     } = this.state;
 
     const {
@@ -105,6 +115,8 @@ class App extends React.PureComponent {
       changeCartQuantity,
       removeItemFromCart,
       handleColorSelect,
+      handleShowCartOverlay,
+      handleHideCartOverlay,
     } = this;
 
     return (
@@ -114,21 +126,21 @@ class App extends React.PureComponent {
             <Navbar
               onSelectClick={handleSelectClick}
               productCount={cartProducts.length}
+              showCartOverlay={handleShowCartOverlay}
+              hideCartOverlay={handleHideCartOverlay}
             />
           </header>
-          <div className="App__background"></div>
+          <div className={cn("App__background", {"App__background--visible": isCartVisible})}></div>
           <main className="App__main">
             {
-              this.state.isCartHidden
-                ? (null)
-                : (
-                  <CartOverlay
-                    productsInCart={cartProducts}
-                    currency={selectedCurrency}
-                    changeCartQuantity={changeCartQuantity}
-                    onDeleteItem={removeItemFromCart}
-                  />
-                )
+              <CartOverlay
+                productsInCart={cartProducts}
+                currency={selectedCurrency}
+                changeCartQuantity={changeCartQuantity}
+                onDeleteItem={removeItemFromCart}
+                isCartVisible={isCartVisible}
+                hideCartOverlay={handleHideCartOverlay}
+              />
             }
             <Routes>
               <Route

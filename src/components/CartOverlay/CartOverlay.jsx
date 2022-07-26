@@ -18,6 +18,8 @@ export class CartOverlay extends React.PureComponent {
       currency: '$',
       changeCartQuantity: () => undefined,
       onDeleteItem: () => undefined,
+      isCartVisible: false,
+      hideCartOverlay: () => undefined,
     };
   }
 
@@ -64,10 +66,12 @@ export class CartOverlay extends React.PureComponent {
     const { 
       productsInCart,
       currency,
+      isCartVisible,
+      hideCartOverlay,
     } = this.props;
 
     return (
-        <article className="CartOverlay">
+        <article className={cn("CartOverlay", {"CartOverlay__visible": isCartVisible === true})}>
           <h2 className="CartOverlay__title">
             My Bag, <span className="CartOverlay__title--quantity">{`${productsInCart.length} items`}</span>
           </h2>
@@ -180,20 +184,20 @@ export class CartOverlay extends React.PureComponent {
             {
               productsInCart.length === 0
                 ? (
-                    <Link to="/all" className="CartOverlay__button-link">
+                    <Link to="/all" className="CartOverlay__button-link"  onClick={() => hideCartOverlay()}>
                       {generateButton('Continue shopping')}
                     </Link>
                   )
                 : (
                     <>
-                      <div>
+                      <div onClick={() => hideCartOverlay()}>
                         <Link to="cart" className="CartOverlay__button-link">
                           {generateButton('View Bag')}
                         </Link>
                       </div>
 
                       <div>
-                        <Link to="/order" className="Cart__button-link">
+                        <Link to="/order" className="Cart__button-link"  onClick={() => hideCartOverlay()}>
                           {generateButton('Order')}
                         </Link>
                       </div>    
