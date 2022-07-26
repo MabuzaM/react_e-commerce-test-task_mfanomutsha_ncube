@@ -130,7 +130,9 @@ class App extends React.PureComponent {
               hideCartOverlay={handleHideCartOverlay}
             />
           </header>
+
           <div className={cn("App__background", {"App__background--visible": isCartVisible})}></div>
+
           <main className="App__main">
             {
               <CartOverlay

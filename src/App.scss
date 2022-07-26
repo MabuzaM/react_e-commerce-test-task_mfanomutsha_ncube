@@ -6,7 +6,6 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 120%;
-
   color: $c-darkGray;
 
   &__header {
@@ -25,11 +24,11 @@
     position: absolute;
     z-index: 3;
     bottom: 0;
-    top: 92px;
-    right: 100px;
-    left: 100px;
+    left: 0;
+    top: 82px;
+    right: 0;
     opacity: 0.75;
-    height: 100vh;
+    width: 100vw;
     display: none;
 
     &--visible {

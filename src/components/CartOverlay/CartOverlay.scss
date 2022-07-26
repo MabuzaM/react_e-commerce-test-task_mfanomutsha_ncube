@@ -5,13 +5,12 @@
   visibility: hidden;
   position: absolute;
   display: none;
-  top: -68px;
+  top: -78px;
   right: 100px;
   padding: 32px 16px;
   z-index: 5;
   width: 326px;
   background-color: $c-white;
-  box-shadow: 1px 3px 8px $c-black;
   transition: opacity ease-in-out 0.5s,
     visibility ease-in-out 0.5s;
 
