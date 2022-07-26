@@ -16,3 +16,8 @@ hr {
 li {
   list-style: none;
 }
+
+.ProductCard__link {
+  text-decoration: none;
+  color: #1d1f22;
+}

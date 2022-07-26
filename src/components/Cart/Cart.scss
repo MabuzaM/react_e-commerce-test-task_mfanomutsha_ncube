@@ -1,13 +1,23 @@
 .Cart {
-  padding: 0 100px 100px;
+  // padding: 0 100px 100px;
+
+  &__line {
+    margin: 22px 0;
+  }
 
   &__item {
-    margin-top: 56px;
     display: flex;
     flex-direction: column;
   }
 
+  &__text {
+    font-size: 18px;
+    color: #f00;
+    font-weight: 600;
+  }
+
   &__summary {
+    max-width: 50%;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -23,6 +33,10 @@
   &__total {
     font-size: 24px;
     line-height: 28px;
+  }
+
+  &__button-link {
+    text-decoration: none;
   }
 }
 
@@ -50,63 +64,8 @@
     line-height: 100%;
   }
 
-  &__size--title,
-  &__color--title {
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 100%;
-  }
-
-  &__size-wraper {
-    display: flex;
-    gap: 8px;
-  }
-
-  &__size--x-small,
-  &__size--small,
-  &__size--medium,
-  &__size--large {
-    border: 1px solid #1d1f22;
-    width: 64px;
-    height: 46px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      cursor: pointer;
-      background-color: #1d1f22;
-      color: #fff;
-    }
-  }
-
-  &__color-wraper {
-    display: flex;
-    gap: 8px;
-  }
-
-  &__color--gray,
-  &__color--blue,
-  &__color--red {
-    width: 32px;
-    height: 32px;
-    background-color: gray;
-  }
-
-  &__size,
-  &__color {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  &__details {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 22px;
-  }
-
   &__extra {
+    position: relative;
     display: flex;
     gap: 24px;
   }
@@ -137,14 +96,45 @@
     }
   }
 
-  &__image {
+  &__image-slider {
+    position: relative;
     width: 200px;
     height: 288px;
-    display: flex;
   }
 
-  &__photo {
+  &__image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
     object-position: center;
+  }
+
+  &__slider-controls {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    display: flex;
+    gap: 8px;
+    opacity: 0.75;
+
+    &--previous,
+    &--next {
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background-color: #000;
+      color: #fff;
+      width: 24px;
+      height: 24px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

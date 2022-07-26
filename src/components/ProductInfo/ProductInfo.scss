@@ -1,5 +1,5 @@
 .ProductInfo {
-  padding: 0 100px 180px;
+  // padding: 0 100px 180px;
   display: flex;
   justify-content: space-between;
 
@@ -9,24 +9,30 @@
     margin-right: 100px;
   }
 
-  &__icon {
+  &__icon-wrapper {
     display: flex;
     flex-direction: column;
     gap: 32px;
 
-    &--1,
-    &--2,
-    &--3 {
-      width: 80px;
-      height: 80px;
-      background-color: aquamarine;
+    &:hover {
+      cursor: pointer;
     }
   }
 
-  &__image {
+  &__icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  &__image-wrapper {
     height: 512px;
     width: 610px;
-    background-color: #c4c4c4;
+  }
+
+  &__image {
+    object-fit: cover;
+    object-position: center;
+    width: 610px;
   }
 }
 
@@ -52,62 +58,68 @@
     font-weight: 700;
     font-size: 18px;
     line-height: 100%;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
 
     &--value {
-      font-weight: 700;
       font-size: 24px;
       line-height: 18px;
     }
   }
 
-  &__size--title,
-  &__color--title {
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 100%;
-  }
-
-  &__size-wraper {
-    display: flex;
-    gap: 8px;
-  }
-
-  &__size--x-small,
-  &__size--small,
-  &__size--medium,
-  &__size--large {
-    border: 1px solid #1d1f22;
-    width: 64px;
-    height: 46px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      cursor: pointer;
-      background-color: #1d1f22;
-      color: #fff;
+  &__attribute {
+    &-title {
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 100%;
+      text-transform: uppercase;
     }
-  }
 
-  &__color-wraper {
-    display: flex;
-    gap: 8px;
-  }
+    &-wraper {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+  
+    &-color {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #1d1f22;
+      margin-bottom: 16px;
 
-  &__color--gray,
-  &__color--blue,
-  &__color--red {
-    width: 32px;
-    height: 32px;
-    background-color: gray;
-  }
+      &:hover {
+        border-color: #5ece7b;
+        cursor: pointer;
+      }
 
-  &__size,
-  &__color {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+      &--isActive {
+        border-color: #5ece7b;
+      }
+    }
+
+    &-other {
+      border: 1px solid #1d1f22;
+      width: 64px;
+      height: 46px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #1d1f22;
+        color: #fff;
+      }
+
+      &--isActive {
+        background-color: #1d1f22;
+        color: #fff;
+      }
+    }
   }
 
   &__details {

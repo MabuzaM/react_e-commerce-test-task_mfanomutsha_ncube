@@ -15,28 +15,42 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 118px;
+    padding: 24px 100px;
+  }
+
+  &__background {
+    background-color: #c2c2c2;
+    position: absolute;
+    z-index: 4;
+    bottom: 0;
+    top: 92px;
+    right: 100px;
+    left: 100px;
+    opacity: 0.75;
+    height: 1800px;
+    display: none;
   }
 
   &__main {
-    margin-top: 174px;
-    padding: 0 100px;
+    position: relative;
+    margin-top: 160px;
+    padding: 0 100px 190px;
 
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
   }
 
   &__heading {
+    display: block;
     font-size: 42px;
-    margin-bottom: 120px;
+    margin: 0 0 86px;
     text-align: left;
   }
 
   &__products {
     display: flex;
-    column-gap: 56px;
-    row-gap: 120px;
+    justify-content: space-between;
+    row-gap: 86px;
     flex-wrap: wrap;
   }
 }

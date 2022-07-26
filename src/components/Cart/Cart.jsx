@@ -1,63 +1,267 @@
 import React from 'react';
-import prod from '../../product-images/prod-a.png';
 import { generateButton } from '../CartButton/CartButton';
 import './Cart.scss';
+import cn from 'classnames';
+import { Link } from 'react-router-dom';
+import { calculateCartTotal } from '../../helpers/helpers';
+
+export const getItemCount = (newItemCount) => {
+  return newItemCount;
+};
 
 export class Cart extends React.PureComponent {
+  state = {
+    productId: '',
+    cartItemColorId: '',
+    itemQuant: 0,
+    imgUrlIndex: 0,
+    cartProducts: [],
+
+  };
+
+  constructor(props) {
+    super(props)
+    props = {
+      productsInCart: [],
+      currency: '$',
+      changeCartQuantity: () => undefined,
+      onDeleteItem: () => undefined,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      cartProducts: [...this.props.productsInCart],
+      itemQuant: this.state.itemQuant + this.props.quantity,
+    })
+  }
+
+  decrementItemCount = (cartItem, itemPrice) => {
+    const itemInCart = this.state.cartProducts.find(product => product.id === cartItem.id);
+
+    if (itemInCart && itemInCart.itemCount >= 1) {
+      itemInCart.itemCount--;
+      itemInCart.price = itemInCart.price -= itemPrice;
+      this.setState({
+        cartProducts: [...this.state.cartProducts.filter(cartProduct => cartProduct.id !== itemInCart.id), itemInCart],
+        itemQuant: this.state.itemQuant - 1,
+      });
+
+      this.props.changeCartQuantity(this.state.itemQuant);
+    } else {
+      this.props.onDeleteItem(itemInCart);
+    }
+  }
+
+  incrementItemCount = (cartItem, itemPrice) => {
+    const itemInCart = this.state.cartProducts.find(product => product.id === cartItem.id);
+
+    if (itemInCart) {
+      itemInCart.itemCount++;
+      itemInCart.price = itemInCart.price += itemPrice;
+      this.setState({
+        cartProducts: [...this.state.cartProducts.filter(cartProduct => cartProduct.id !== itemInCart.id), itemInCart],
+        itemQuant: this.state.itemQuant + 1,
+      });
+
+      this.props.changeCartQuantity(this.state.itemQuant);
+    }
+  }
+
+  slideThroughImages = (operator, gallery) => {
+    if (this.state.imgUrlIndex >= 0 && this.state.imgUrlIndex < gallery.length - 1) {
+      switch(operator) {
+        case '+':
+          this.setState({imgUrlIndex: this.state.imgUrlIndex + 1});
+          break;
+        
+        case '-':
+          this.setState({imgUrlIndex: this.state.imgUrlIndex - 1});
+          break;
+
+        default:;
+      }
+    } else {
+      this.setState({imgUrlIndex: 0});
+    }
+  };
+
   render () {
+    const {
+      imgUrlIndex,
+    } = this.state;
+
+    const { 
+      productsInCart,
+      currency,
+    } = this.props;
+
+    console.log(productsInCart);
+
     return (
-      <article className="Cart">
-        <h2 className="Cart__title">Cart</h2>
-        <div className="Item Cart__item">
-          <hr />
-          <div className="Item__details">
-            <div className="Item__info">
-              <h3 className="Item__title">Apollo </h3>
-              <p className="Item__description">Running Shorts</p>
-              <p className="Item__price">$50</p>
+      <>
+        <article className="Cart">
+          <div className="Item Cart__item">
+            <hr className="Cart__line"/>
+            {
+              this.state.cartProducts.length === 0
+                ?  (
+                      <>
+                        <p className="Cart__text">Your cart is empty</p>
+                      </>
+                  )
+                  :  (productsInCart?.map(product => {
+                    const {
+                      id,
+                      name,
+                      brand,
+                      prices,
+                      gallery,
+                      attributes,                
+                    } = product;
 
-              <div className="Item__size">
-                <p className="Item__size--title">Size:</p>
-                <div className="Item__size-wraper">
-                  <div className="Item__size--x-small">XS</div>
-                  <div className="Item__size--small">S</div>
-                  <div className="Item__size--medium">M</div>
-                  <div className="Item__size--large">L</div>
-                </div>
-              </div>
+                    const itemPrice = prices?.find(price => price.currency.symbol === currency).amount;
 
-              <div className="Item__color">
-                <p className="Item__color--title">Color:</p>
-                <div className="Item__color-wraper">
-                  <div className="Item__color--gray">gray</div>
-                  <div className="Item__color--blue">blue</div>
-                  <div className="Item__color--red">red</div>
-                </div>
-              </div>
-
+                    return (
+                      <>
+                      <div className="Item__details" key={id}>
+                        <div className="Item__info">
+                          <h3 className="Item__title">{name}</h3>
+                          <p className="Item__description">{brand}</p>
+                          <p className="Item__price">
+                            {currency}
+                            {
+                              prices && (prices?.find(price => price.currency.symbol === currency).amount)
+                            }
+                          </p>
+            
+                          <div className="Item__attribute">
+                            {
+                              attributes?.map((attribute) => {
+                                return <React.Fragment key={attribute.id}>
+                                  <p className="Item__attribute-title" key={attribute.id}>{attribute.name}:</p>
+                                  <div className="Item__attribute-wraper">
+                                  {
+                                    attribute?.items?.map((item) => {
+                                      if (attribute.name !== 'Color') {
+                                        return <div
+                                          className={cn(
+                                            "Item__attribute-other",
+                                            {"Item__attribute-other--isActive": product.colorId === item.id}
+                                          )}
+                                          onClick={() => this.setState({item2Id: item.id})}
+                                        >
+                                          {item.displayValue}
+                                        </div>
+                                      }
+                                        return <div
+                                          key={item.id}
+                                          className={cn(
+                                            "Item__attribute-color",
+                                            {"Item__attribute-color--isActive": product.colorId === item.id}
+                                          )}
+                                          style={{
+                                            backgroundColor: item.value,
+                                          }}
+                                        >
+                                        </div>
+                                      })
+                                    }
+                                    </div>
+                                  </React.Fragment>
+                                })
+                              }
+                            </div>
+                          </div>
               
-              {generateButton('Order')}
-            </div>
-
-            <div className="Item__extra">
-              <div className="Item__quantity-controls">
-                <div className="Item__increase">+</div>
-                <p className="Item__quant">1</p>
-                <div className="Item__decrease">-</div>
-              </div>
-              <div className="Item__image">
-                <img src={prod} alt="Item" className="Item__photo" />
-              </div>
-            </div>
+                          <div className="Item__extra">
+                            <div className="Item__quantity-controls">
+                              <div
+                                className="Item__increase"
+                                onClick={() => this.incrementItemCount(product, itemPrice)}
+                              >
+                                +
+                              </div>
+                              <p className="Item__quant">{product.itemCount}</p>
+                              <div
+                                className="Item__decrease"
+                                onClick={() => this.decrementItemCount(product, itemPrice)}
+                              >
+                                -
+                              </div>
+                            </div>
+                            <div className="Item__image-slider">
+                              <img src={
+                                imgUrlIndex < 0
+                                  ? (gallery[0])
+                                  : (gallery[imgUrlIndex])
+                              } alt="Item" className="Item__image" />
+                              <div className="Item__slider-controls">
+                                <div className="Item__slider-controls--previous" onClick={() => this.slideThroughImages('-', product?.gallery)}>&lt;</div>
+                                <div className="Item__slider-controls--next" onClick={() => this.slideThroughImages('+', product?.gallery)}>&gt;</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <hr className="Cart__line" />
+                      </>
+                    );
+                  }))
+                }
           </div>
-        </div>
 
-        <div className="Cart__summary">
-          <p className="Cart__tax">Tax 21%: <span className="Cart__summary--value">78</span></p>
-          <p className="Cart__quantity">Quantity: <span className="Cart__summary--value">3</span></p>
-          <p className="Cart__total">Total: <span className="Cart__summary--value">R1600</span></p>
-        </div>
-      </article>
+          <div className="Cart__summary">
+            <p className="Cart__tax">Tax 21%: 
+              <span className="Cart__summary--value">
+                {` ${((21 / 100) * calculateCartTotal(productsInCart)).toFixed(2)}`}
+              </span>
+            </p>
+
+            <p className="Cart__quantity">Quantity:
+              <span className="Cart__summary--value">
+                {` ${this.state.itemQuant}`}
+              </span>
+            </p>
+
+            <p className="Cart__total">Total: 
+              <span className="Cart__summary--value">
+                {` ${calculateCartTotal(productsInCart)}`}
+              </span></p>
+            {
+              productsInCart.length === 0
+                ? (
+                    <Link to="/all" className="Cart__button-link">
+                      {generateButton('Continue shopping')}
+                    </Link>
+                  )
+                : (generateButton('Order'))
+            }
+          </div>
+        </article>
+
+        <hr />
+
+        <article className="Order">
+          <table className="Order__table">
+            <thead>
+              <th>Quantity</th>
+              <th>Item</th>
+              <th>Amount</th>
+            </thead>
+            <tbody>
+              {
+                productsInCart.map(product => (
+                  <>
+                    <td>{product.itemCount}</td>
+                    <td>{product.name}</td>
+                    <td>{product.price}</td>
+                  </>
+                ))
+              }
+            </tbody>
+          </table>
+        </article>
+      </>
     );
   }
 }

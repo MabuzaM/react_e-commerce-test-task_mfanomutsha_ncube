@@ -11,9 +11,12 @@
   text-transform: uppercase;
   border: none;
   width: 100%;
+  transition: background-color ease-in-out 0.5s,
+    box-shadow ease-in-out 0.5s;
 
   &:hover {
     background-color: #80df9a;
+    box-shadow: 1px 3px 8px #000;
     cursor: pointer;
   }
 }

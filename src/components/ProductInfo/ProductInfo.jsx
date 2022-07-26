@@ -1,63 +1,132 @@
 import React from 'react';
-import { generateButton } from '../CartButton/CartButton';
 import './ProductInfo.scss';
+import '../CartButton/CartButton.scss'
+import { renderAttributes } from '../../helpers/helpers';
 
 export class ProductInfo extends React.PureComponent {
+  state = {
+    product: null,
+    imageSrc: '',
+    colorId: '',
+    otherAttributes: {},
+  }
+
+  constructor(props) {
+    super(props)
+    props = {
+      products: [],
+      selectedProductId: '',
+      currency: "$",
+      onAddToCart: () => undefined,
+      onColorSelect: () => undefined,
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.products) {
+      this.setState({product: {...this.props.products.find(product => {
+        this.setState({imageSrc: product.gallery[0]})
+        return product.id === this.props.selectedProductId
+      })}})
+    }
+  }
+
+  colorIdSetter = (id) => {
+    this.setState({colorId: id})
+  };
+
+  otherAttributesIdSetter = (name, id) => {
+    this.setState({otherAttributes: {...this.state.otherAttributes, [name]: id}});
+  };
+
   render () {
+    const {
+      products,
+      currency,
+      onAddToCart,
+      onColorSelect,
+    } = this.props;
+
+    const {
+      product,
+      imageSrc,
+      colorId,
+      otherAttributes,
+    } = this.state;
+
+    const {
+      colorIdSetter,
+      otherAttributesIdSetter,
+    } = this;
+
     return (
       <article className="ProductInfo">
         <div className="ProductInfo__gallery">
-          <div className="ProductInfo__icon">
-            <img src="" alt="" className="ProductInfo__icon--1"/>
-            <img src="" alt="" className="ProductInfo__icon--2"/>
-            <img src="" alt="" className="ProductInfo__icon--3"/>
+          <div className="ProductInfo__icon-wrapper">
+          {
+            product?.gallery?.map(image => (
+              <img
+                key={image}
+                src={image}
+                alt={product.name}
+                className="ProductInfo__icon"
+                onClick={() => {
+                  this.setState({imageSrc: image})
+                }}
+              />
+            ))
+          }
           </div>
 
-          <div className="ProductInfo__image">
-            <img src="" alt="" />
+          <div className="ProductInfo__image-wrapper">
+            <img
+              src={imageSrc}
+              alt={product?.name}
+              className="ProductInfo__image" />
           </div>
         </div>
 
-        <div className="Item__info">
-          <h3 className="Item__title">Apollo </h3>
-          <p className="Item__description">Running Shorts</p>
-
-          <div className="Item__size">
-            <p className="Item__size--title">Size:</p>
-            <div className="Item__size-wraper">
-              <div className="Item__size--x-small">XS</div>
-              <div className="Item__size--small">S</div>
-              <div className="Item__size--medium">M</div>
-              <div className="Item__size--large">L</div>
-            </div>
+        <div className="ProductInfo__item Item__info">
+          <h3 className="Item__title">{product?.name}</h3>
+          <div className="Item__description">
+            {product?.brand}
           </div>
 
-          <div className="Item__color">
-            <p className="Item__color--title">Color:</p>
-            <div className="Item__color-wraper">
-              <div className="Item__color--gray">gray</div>
-              <div className="Item__color--blue">blue</div>
-              <div className="Item__color--red">red</div>
-            </div>
+          {
+            renderAttributes(
+              product,
+              colorId,
+              otherAttributesIdSetter,
+              colorIdSetter,
+            )
+          }
+
+          <div className="Item__price">
+            <p className="Item__price--title">Price:</p>
+            <p className="Item__price--value">
+              {currency}
+              {product?.prices && (product?.prices?.find(price => price.currency.symbol === currency).amount)}
+            </p>
           </div>
 
-          <p className="Item__price">
-            Price:
-            
-            <br />
-            
-            <span className="Item__price--value">
-              $50
-            </span>
-          </p>
+          <button
+            className="CartButton"
+            type="button"
+            onClick={() => {
+              const price = product?.prices && (product?.prices?.find(price => price.currency.symbol === currency).amount);
+              onAddToCart(colorId, otherAttributes, price)
+            }}
+          >
+            Add to cart
+          </button>
 
-          {generateButton('Add to cart')}
-
-          <p className="ProductInfo__text">
-          Find stunning women's cocktail dresses and party dresses. Stand out in lace and metallic cocktail dresses and party dresses from all your favorite brands.
-          </p>
+          <div
+            className="ProductInfo__text"
+            dangerouslySetInnerHTML={
+              {__html: product?.description && (product.description)}
+            }
+          />
         </div>
-      </article>
-    )
+    </article>);
   }
 }

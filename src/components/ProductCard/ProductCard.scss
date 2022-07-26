@@ -1,11 +1,31 @@
 .ProductCard {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  flex-basis: calc(100% / 4);
+  flex-basis: calc(100% / 33);
+  transition: transform ease-in-out 0.5s;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(105%);
+  }
 
   &__image {
     margin-bottom: 24px;
+    width: 354px;
+    height: 330px;
+    object-fit: cover;
+  }
+
+  &__icon {
+    position: absolute;
+    right: 32px;
+    bottom: 72px;
+    opacity: 0;
+    &--visible {
+      opacity: 1;
+    }
   }
 
   &__title {
