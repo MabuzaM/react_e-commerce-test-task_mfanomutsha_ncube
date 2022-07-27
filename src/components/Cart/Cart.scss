@@ -131,9 +131,11 @@
       color: $c-white;
       width: 24px;
       height: 24px;
+      transition: transform ease-in-out 0.5s;
 
       &:hover {
         cursor: pointer;
+        transform: scale(102%);
       }
     }
   }

@@ -10,6 +10,7 @@ export class ProductInfo extends React.PureComponent {
     imageSrc: '',
     colorId: '',
     otherAttributes: {},
+    isVisible: false,
   }
 
   constructor(props) {
@@ -48,6 +49,7 @@ export class ProductInfo extends React.PureComponent {
       imageSrc,
       colorId,
       otherAttributes,
+      isVisible,
     } = this.state;
 
     const {
@@ -73,7 +75,6 @@ export class ProductInfo extends React.PureComponent {
             ))
           }
           </div>
-
           <div className="ProductInfo__image-wrapper">
             <img
               src={imageSrc}
@@ -83,7 +84,15 @@ export class ProductInfo extends React.PureComponent {
         </div>
 
         <div className="ProductInfo__item Item__info">
+          <p className={cn(
+            "ProductInfo__success-message",
+            {"ProductInfo__success-message--visible": isVisible}
+          )}>
+            Successfully dded to cart
+          </p>
+
           <h3 className="Item__title">{product?.name}</h3>
+
           <div className="Item__description">
             {product?.brand}
           </div>
@@ -147,9 +156,11 @@ export class ProductInfo extends React.PureComponent {
               onAddToCart(
                 colorId,
                 otherAttributes,
-                renderPrice(product?.prices, currency)
+                renderPrice(product?.prices, currency),
+                this.setState({isVisible: true})
               )
             }}
+            onMouseOut={() => this.setState({isVisible: false})}
           >
             Add to cart
           </button>
