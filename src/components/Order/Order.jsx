@@ -22,6 +22,8 @@ export class Order extends React.PureComponent {
     const { productsInCart } = this.state;
     const { currency } = this.props;
 
+    const orderTotal = calculateCartTotal(productsInCart, currency);
+
     return (
       <>
         <article className="Order">
@@ -62,7 +64,7 @@ export class Order extends React.PureComponent {
           <div className="Cart__summary">
             <p className="Cart__tax">Tax 21%: 
               <span className="Cart__summary--value">
-                {` ${currency} ${((21 / 100) * calculateCartTotal(productsInCart)).toFixed(2)}`}
+                {` ${currency} ${((21 / 100) * orderTotal).toFixed(2)}`}
               </span>
             </p>
 
@@ -74,7 +76,7 @@ export class Order extends React.PureComponent {
 
             <p className="Cart__total">Total: 
               <span className="Cart__summary--value">
-                {` ${currency} ${calculateCartTotal(productsInCart)}`}
+                {` ${currency} ${orderTotal}`}
               </span>
             </p>
           </div>

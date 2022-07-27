@@ -1,5 +1,5 @@
 import React from 'react';
-import { generateButton } from '../CartButton/CartButton';
+import { CartButton } from '../CartButton/CartButton';
 import './CartOverlay.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
@@ -177,7 +177,7 @@ export class CartOverlay extends React.PureComponent {
 
         <div className="CartOverlay__summary">
           <p className="CartOverlay__total">Total:</p>
-          <p className="Cart__summary--value">{` ${currency} ${calculateCartTotal(productsInCart)}`}</p>
+          <p className="Cart__summary--value">{` ${currency} ${calculateCartTotal(productsInCart, currency)}`}</p>
         </div>
 
         <div className="CartOverlay__buttons">
@@ -185,20 +185,32 @@ export class CartOverlay extends React.PureComponent {
               productsInCart.length === 0
                 ? (
                     <Link to="/all" className="CartOverlay__button-link"  onClick={() => hideCartOverlay()}>
-                      {generateButton('Continue shopping')}
+                      <CartButton
+                        buttonText={'Continue shopping'}
+                        backgroundColor={'#5ece7b'}
+                        color={'#fff'}
+                      />
                     </Link>
                   )
                 : (
                     <>
                       <div onClick={() => hideCartOverlay()}>
                         <Link to="cart" className="CartOverlay__button-link">
-                          {generateButton('View Bag')}
+                          <CartButton
+                            buttonText={'View Bag'}
+                            backgroundColor={'#fff'}
+                            borderColor={'#1d1f22'}
+                            color={'#1d1f22'}
+                           />
                         </Link>
                       </div>
 
                       <div>
                         <Link to="/order" className="Cart__button-link"  onClick={() => hideCartOverlay()}>
-                          {generateButton('Order')}
+                        <CartButton
+                          buttonText={'Order'}
+                          backgroundColor={'#5ece7b'}
+                        />
                         </Link>
                       </div>    
                     </>

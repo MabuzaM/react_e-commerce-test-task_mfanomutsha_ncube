@@ -58,12 +58,18 @@ export const renderProducts = (products, currency, productsInCart, stateSetter=(
   })
 };
 
-export const calculateCartTotal = (productsInCart) => {
-  return productsInCart.map(product => product.price)
-    .reduce((price1, price2) => price1 + price2, 0).toFixed(2);
+export const calculateCartTotal = (productsInCart, currency) => {
+  const itemTotalPrices = productsInCart
+    ?.map(product => product.prices
+      ?.find(price => price.currency.symbol === currency)?.amount * product.itemCount);
+
+  return itemTotalPrices
+    .reduce((total1, total2) => total1 + total2, 0)
+    .toFixed(2);
 }
 
 export const getItemsTotal = (productsInCart) => {
   return productsInCart.map(product => product.itemCount)
-    .reduce((productCount1, productCount2) => productCount1 + productCount2, 0).toFixed(2);
+    .reduce((productCount1, productCount2) => productCount1 + productCount2, 0)
+    .toFixed(2);
 }

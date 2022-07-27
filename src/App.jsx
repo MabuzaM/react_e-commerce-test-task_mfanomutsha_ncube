@@ -91,7 +91,7 @@ class App extends React.PureComponent {
 
   removeItemFromCart = (itemInCart) => {
     this.setState({
-      cartProducts: [...this.state.cartProducts.filter(cartProduct => cartProduct.id !== itemInCart.id)]
+      cartProducts: this.state.cartProducts.filter(cartProduct => cartProduct.id !== itemInCart.id),
     })
   }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { generateButton } from '../CartButton/CartButton';
+import { CartButton } from '../CartButton/CartButton';
 import './Cart.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
@@ -46,7 +46,9 @@ export class Cart extends React.PureComponent {
       });
 
       this.props.changeCartQuantity(this.state.itemQuant);
-    } else {
+    }
+
+    if (itemInCart.itemCount === 0) {
       this.props.onDeleteItem(itemInCart);
     }
   }
@@ -95,6 +97,8 @@ export class Cart extends React.PureComponent {
       productsInCart,
       currency,
     } = this.props;
+
+    const cartTotal = calculateCartTotal(productsInCart, currency);
 
     return (
       <>
@@ -216,7 +220,7 @@ export class Cart extends React.PureComponent {
           <div className="Cart__summary">
             <p className="Cart__tax">Tax 21%: 
               <span className="Cart__summary--value">
-                {` ${currency} ${((21 / 100) * calculateCartTotal(productsInCart)).toFixed(2)}`}
+                {` ${currency} ${((21 / 100) * cartTotal).toFixed(2)}`}
               </span>
             </p>
 
@@ -228,18 +232,24 @@ export class Cart extends React.PureComponent {
 
             <p className="Cart__total">Total: 
               <span className="Cart__summary--value">
-                {` ${currency} ${calculateCartTotal(productsInCart)}`}
+                {` ${currency} ${cartTotal}`}
               </span></p>
             {
               productsInCart.length === 0
                 ? (
                     <Link to="/all" className="Cart__button-link">
-                      {generateButton('Continue shopping')}
+                      <CartButton
+                        buttonText={'Continue shopping'}
+                        backgroundColor={'#5ece7b'}
+                      />
                     </Link>
                   )
                 : (
                     <Link to="/order" className="Cart__button-link">
-                      {generateButton('Order')}
+                      <CartButton
+                        buttonText={'Order'}
+                        backgroundColor={'#5ece7b'}
+                      />
                     </Link>
                   )
             }

@@ -2,6 +2,7 @@ import React from 'react';
 import './ProductInfo.scss';
 import '../CartButton/CartButton.scss'
 import cn from 'classnames';
+import { renderPrice } from '../../helpers/helpers';
 
 export class ProductInfo extends React.PureComponent {
   state = {
@@ -135,7 +136,7 @@ export class ProductInfo extends React.PureComponent {
             <p className="Item__price--title">Price:</p>
             <p className="Item__price--value">
               {currency}
-              {product?.prices && (product?.prices?.find(price => price.currency.symbol === currency).amount)}
+              {renderPrice(product?.prices, currency)}
             </p>
           </div>
 
@@ -143,8 +144,11 @@ export class ProductInfo extends React.PureComponent {
             className="CartButton"
             type="button"
             onClick={() => {
-              const price = product?.prices && (product?.prices?.find(price => price.currency.symbol === currency).amount);
-              onAddToCart(colorId, otherAttributes, price)
+              onAddToCart(
+                colorId,
+                otherAttributes,
+                renderPrice(product?.prices, currency)
+              )
             }}
           >
             Add to cart
