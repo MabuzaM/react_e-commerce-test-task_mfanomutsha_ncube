@@ -131,129 +131,129 @@ class App extends React.PureComponent {
             />
           </header>
 
-          <div className={cn("App__background", {"App__background--visible": isCartVisible})}></div>
-
-          <main className="App__main">
-            {
-              <CartOverlay
-                productsInCart={cartProducts}
-                currency={selectedCurrency}
-                changeCartQuantity={changeCartQuantity}
-                onDeleteItem={removeItemFromCart}
-                isCartVisible={isCartVisible}
-                hideCartOverlay={handleHideCartOverlay}
-              />
-            }
-            <Routes>
-              <Route
-                path="all"
-                element={
-                  <>
-                    <h1 className="App__heading">ALL PRODUCTS</h1>
-                    <div className="App__products">
-                      <ProductList
-                        products={products}
-                        currency={selectedCurrency}
-                        cartProducts={cartProducts}
-                        onProductClick={handleProductClick}
-                      />
-                    </div>
-                  </>
-                }
-              />
-
-              <Route
-                path="home"
-                element={<Navigate to="all" />}
-              />
-
-              <Route
-                path=""
-                element={<Navigate to="all" />}
-              />
-
-              <Route
-                path="clothes"
-                element={
-                  <>
-                    <h1 className="App__heading">CLOTHES</h1>
-                    <div className="App__products">
-                      <Clothes
-                        currency={selectedCurrency}
-                        cartProducts={cartProducts}
-                        products={products}
-                        onProductClick={handleProductClick}
-                      />
-                    </div>
-                  </>                  
-                }
-              />
-
-              <Route
-                path="cart"
-                element={
-                  <>
-                    <h1 className="App__heading">CART</h1>
-                    <div className="App__cart">
-                      <Cart
-                        productsInCart={cartProducts}
-                        currency={selectedCurrency}
-                        changeCartQuantity={changeCartQuantity}
-                        onDeleteItem={removeItemFromCart}
-                      />
-                    </div>
-                  </>
-                }
-              />
-
-              <Route
-                path="tech"
-                element={
-                  <>
-                    <h1 className="App__heading">TECH</h1>
-                    <div className="App__products">
-                      <Tech
-                        currency={selectedCurrency}
-                        cartProducts={cartProducts}
-                        products={products}
-                        onProductClick={handleProductClick}
-                      />
-                    </div>
-                  </>
-                }
-              />
-
-              <Route
-                path={`/productid/:${productInfo?.id}`}
-                element={
-                  <ProductInfo
-                    products={products}
-                    selectedProductId={productInfo?.id}
+            <main className="App__main">
+              <div className={cn("App__background", {"App__background--visible": isCartVisible})}>
+                {
+                  <CartOverlay
+                    productsInCart={cartProducts}
                     currency={selectedCurrency}
-                    onAddToCart={handleAddToCartClick}
-                    onColorSelect={handleColorSelect}
+                    changeCartQuantity={changeCartQuantity}
+                    onDeleteItem={removeItemFromCart}
+                    isCartVisible={isCartVisible}
+                    hideCartOverlay={handleHideCartOverlay}
                   />
                 }
-              />
+              </div>
+              <Routes>
+                <Route
+                  path="all"
+                  element={
+                    <>
+                      <h1 className="App__heading">ALL PRODUCTS</h1>
+                      <div className="App__products">
+                        <ProductList
+                          products={products}
+                          currency={selectedCurrency}
+                          cartProducts={cartProducts}
+                          onProductClick={handleProductClick}
+                        />
+                      </div>
+                    </>
+                  }
+                />
 
-              <Route
-                path='order'
-                element={
-                  <Order
-                    orderItems={cartProducts}
-                    currency={selectedCurrency}
-                  />
-                }              
-              />
+                <Route
+                  path="home"
+                  element={<Navigate to="all" />}
+                />
 
-              <Route
-                path="*"
-                element={(
-                  <h1 className="App__heading">Page Not Found</h1>
-                )}
-              />
-            </Routes>
-          </main>
+                <Route
+                  path=""
+                  element={<Navigate to="all" />}
+                />
+
+                <Route
+                  path="clothes"
+                  element={
+                    <>
+                      <h1 className="App__heading">CLOTHES</h1>
+                      <div className="App__products">
+                        <Clothes
+                          currency={selectedCurrency}
+                          cartProducts={cartProducts}
+                          products={products}
+                          onProductClick={handleProductClick}
+                        />
+                      </div>
+                    </>                  
+                  }
+                />
+
+                <Route
+                  path="cart"
+                  element={
+                    <>
+                      <h1 className="App__heading">CART</h1>
+                      <div className="App__cart">
+                        <Cart
+                          productsInCart={cartProducts}
+                          currency={selectedCurrency}
+                          changeCartQuantity={changeCartQuantity}
+                          onDeleteItem={removeItemFromCart}
+                        />
+                      </div>
+                    </>
+                  }
+                />
+
+                <Route
+                  path="tech"
+                  element={
+                    <>
+                      <h1 className="App__heading">TECH</h1>
+                      <div className="App__products">
+                        <Tech
+                          currency={selectedCurrency}
+                          cartProducts={cartProducts}
+                          products={products}
+                          onProductClick={handleProductClick}
+                        />
+                      </div>
+                    </>
+                  }
+                />
+
+                <Route
+                  path={`/productid/:${productInfo?.id}`}
+                  element={
+                    <ProductInfo
+                      products={products}
+                      selectedProductId={productInfo?.id}
+                      currency={selectedCurrency}
+                      onAddToCart={handleAddToCartClick}
+                      onColorSelect={handleColorSelect}
+                    />
+                  }
+                />
+
+                <Route
+                  path='order'
+                  element={
+                    <Order
+                      orderItems={cartProducts}
+                      currency={selectedCurrency}
+                    />
+                  }              
+                />
+
+                <Route
+                  path="*"
+                  element={(
+                    <h1 className="App__heading">Page Not Found</h1>
+                  )}
+                />
+              </Routes>
+            </main>
           {'       '}
         </div>
       </ApolloProvider>
