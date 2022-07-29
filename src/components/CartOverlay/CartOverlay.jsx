@@ -4,6 +4,7 @@ import './CartOverlay.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
 import { calculateCartTotal, renderPrice } from '../../helpers/helpers';
+import recycle from '../../icons-svg/recycle.png';
 
 export class CartOverlay extends React.PureComponent {
   state = {
@@ -157,7 +158,11 @@ export class CartOverlay extends React.PureComponent {
                               className="Overlay-Item__decrement"
                               onClick={() => this.decrementItemCount(product, itemPrice)}
                             >
-                              -
+                              {
+                                product.itemCount === 1
+                                  ? (<img src={recycle} alt='recycle' className="Overlay-Item__remove-icon"/>)
+                                  : ('-')
+                              }
                             </div>
                           </div>
                           <div className="Overlay-Item__image-wrapper">

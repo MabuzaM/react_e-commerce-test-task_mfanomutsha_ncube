@@ -4,6 +4,7 @@ import './Cart.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
 import { calculateCartTotal, renderPrice, getItemsTotal } from '../../helpers/helpers';
+import recycle from '../../icons-svg/recycle.png';
 
 export const getItemCount = (newItemCount) => {
   return newItemCount;
@@ -188,7 +189,11 @@ export class Cart extends React.PureComponent {
                                 className="Item__decrease"
                                 onClick={() => this.decrementItemCount(product, itemPrice)}
                               >
-                                -
+                                {
+                                  product.itemCount === 1
+                                    ? (<img src={recycle} alt='recycle' className="Item__remove-icon"/>)
+                                    : ('-')
+                                }
                               </div>
                             </div>
                             <div className="Item__image-slider">
