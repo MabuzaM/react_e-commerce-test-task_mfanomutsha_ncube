@@ -20,7 +20,7 @@
   }
 
   &__background {
-    background-color: #c2c2c2;
+    background-color: rgba(57, 55, 72, 0.22);;
     position: absolute;
     z-index: 3;
     bottom: 0;
@@ -30,14 +30,12 @@
     width: 100vw;
     height: inherit;
     display: flex;
-    opacity: 0;
     visibility: hidden;
-    transition: opacity ease-in-out 0.5s,
-      visibility ease-in-out 0.5s;
+    transition: visibility ease-in-out 0.5s,
+      background-color ease-in-out 0.5s;
 
 
     &--visible {
-      opacity: 0.75;
       visibility: visible;
     }
   }
