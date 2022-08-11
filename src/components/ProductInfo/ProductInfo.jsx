@@ -2,14 +2,19 @@ import React from 'react';
 import './ProductInfo.scss';
 import '../CartButton/CartButton.scss'
 import cn from 'classnames';
-import { renderPrice } from '../../helpers/helpers';
+import { checkOtherAttributesInProduct, checkProductColor, renderPrice, checkOtherAttributesAndColor } from '../../helpers/helpers';
+import { sanitize } from 'dompurify';
+import { client, getProduct } from '../../api/api';
 
 export class ProductInfo extends React.PureComponent {
   state = {
     product: null,
+    productFromServer: null,
+    id: '',
     imageSrc: '',
     colorId: '',
     otherAttributes: {},
+    allAttributes: {},
     isVisible: false,
   }
 
@@ -38,6 +43,10 @@ export class ProductInfo extends React.PureComponent {
     this.setState({otherAttributes: {...this.state.otherAttributes, [name]: id}});
   };
 
+  allAttributesIdSetter = (name, id) => {
+    this.setState({allAttributes: {...this.state.allAttributes, [name]: id}});
+  };
+
   render () {
     const {
       currency,
@@ -49,13 +58,17 @@ export class ProductInfo extends React.PureComponent {
       imageSrc,
       colorId,
       otherAttributes,
+      allAttributes,
       isVisible,
     } = this.state;
 
     const {
       colorIdSetter,
       otherAttributesIdSetter,
+      allAttributesIdSetter,
     } = this;
+
+    const sanitizer = sanitize;
 
     return (
       <article className="ProductInfo">
@@ -101,35 +114,37 @@ export class ProductInfo extends React.PureComponent {
             {
               product?.attributes?.map((attribute) => {
                 return <React.Fragment>
-                  <p className="Item__attribute-title">{attribute.name}:</p>
-                  <div className="Item__attribute-wraper" key={attribute.id}>
+                  <p className="Item__attribute-title">{attribute?.name}:</p>
+                  <div className="Item__attribute-wraper" key={attribute?.id}>
                   {
                     attribute?.items?.map((item) => {
-                      if (attribute.name !== 'Color') {
+                      if (attribute?.name !== 'Color') {
                         return <div
                           className={cn(
                             "Item__attribute-other",
-                            {"Item__attribute-other--isActive": otherAttributes[attribute.name] === item.id},
+                            {"Item__attribute-other--isActive": otherAttributes[attribute?.name] === item?.id},
                           )}
                     
                           onClick={() => {
-                            otherAttributesIdSetter(attribute.name, item.id)
+                            otherAttributesIdSetter(attribute?.name, item?.id);
+                            allAttributesIdSetter(attribute?.name, item?.id);
                           }}
                         >
-                          {item.displayValue}
+                          {item?.displayValue}
                         </div>
                       }
                         return <div
-                          key={item.id}
+                          key={item?.id}
                           className={cn(
                             "Item__attribute-color",
-                            {"Item__attribute-color--isActive": colorId === item.id}
+                            {"Item__attribute-color--isActive": colorId === item?.id}
                           )}
                           style={{
-                            backgroundColor: item.value,
+                            backgroundColor: item?.value,
                           }}
                           onClick={() => {
-                            colorIdSetter(item.id)
+                            colorIdSetter(item?.id);
+                            allAttributesIdSetter(attribute?.name, item?.id);
                           }}
                         >
                         </div>
@@ -150,15 +165,19 @@ export class ProductInfo extends React.PureComponent {
           </div>
 
           <button
-            className="CartButton"
+            className={cn("CartButton", {"CartButton__outOfStock": !product?.inStock})}
             type="button"
             onClick={() => {
-              onAddToCart(
-                colorId,
-                otherAttributes,
-                renderPrice(product?.prices, currency),
-                this.setState({isVisible: true})
-              )
+              console.log(checkOtherAttributesAndColor(product))
+                if (checkOtherAttributesAndColor(product).length === Object.values(allAttributes).length) {
+                  onAddToCart(
+                    allAttributes,
+                    renderPrice(product?.prices, currency)
+                  )
+                  this.setState({isVisible: true})
+                }
+                console.log(allAttributes)
+                return;
             }}
             onMouseOut={() => this.setState({isVisible: false})}
           >
@@ -168,7 +187,7 @@ export class ProductInfo extends React.PureComponent {
           <div
             className="ProductInfo__text"
             dangerouslySetInnerHTML={
-              {__html: product?.description && (product.description)}
+              {__html: sanitizer(product?.description && (product.description))}
             }
           />
         </div>

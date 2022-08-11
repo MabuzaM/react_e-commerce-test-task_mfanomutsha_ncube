@@ -1,23 +1,29 @@
 import React from 'react';
 import './Navbar.scss';
 import logo from '../../icons-svg/a-logo.svg';
+import currenciesArrow from '../../icons-svg/currenciesButton.svg';
 import cart from '../../icons-svg/empty-cart.svg';
 import { CATEGORIES_QUERY, CURRENCIES_QUERY, client } from '../../api/api';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
 
 export class Navbar extends React.PureComponent {
   state = {
-    categories: [],
+    categories: [{name: "home"}],
     currencies: [],
   }
 
   constructor(props) {
     super(props)
     props = {
-      onSelectClick: () => undefined,
+      handleShowCurrencies: () => undefined,
+      hideCurrencySwitcher: () => undefined,
+      isCurrencySwitcherShown: false,
+      selectedCurrency: '$',
       productCount: 0,
       showCartOverlay: () => undefined,
       hideCartOverlay: () => undefined,
+      onChangeRoute: () => undefined,
     };
   }
 
@@ -25,7 +31,10 @@ export class Navbar extends React.PureComponent {
     client.query({
       query: CATEGORIES_QUERY,
     }).then(({loading, error, data }) => {
-      this.setState({categories: data.categories})
+      this.setState({
+        categories: [...this.state.categories, ...data.categories
+          .filter(category => category.name !== 'all')]
+      })
     }) 
 
     client.query({
@@ -36,12 +45,16 @@ export class Navbar extends React.PureComponent {
   }
 
   render () {
-    const { categories, currencies } = this.state;
+    const { categories } = this.state;
     const {
       showCartOverlay,
-      onSelectClick,
+      handleShowCurrencySwitcher,
+      hideCurrencySwitcher,
+      selectedCurrency,
       productCount,
       hideCartOverlay,
+      isCurrencySwitcherShown,
+      onChangeRoute,
     } = this.props;
 
     return (
@@ -50,9 +63,18 @@ export class Navbar extends React.PureComponent {
           <ul className="Nav__list">
             {
               categories.map(({ name }) => (
-                <li key={name} className="Nav__item">
+                <li
+                  key={name}
+                  className="Nav__item"
+                  onClick={() => {
+                    onChangeRoute(name);
+                    hideCartOverlay();
+                  }}
+                >
                   <NavLink to={name} className="Nav__link">
-                    {name}
+                    {
+                      name && (name)
+                    }
                   </NavLink>
                 </li>
               ))
@@ -60,40 +82,45 @@ export class Navbar extends React.PureComponent {
           </ul>
         </nav>
 
-        <NavLink to="all" className="Nav__logo">
+        <NavLink
+          to="/home"
+          className="Nav__logo"
+          onClick={() => hideCartOverlay()}
+        >
           <img src={logo} alt="a logo" />
         </NavLink>
 
         <article className="Nav__controls">
-          <select
-            name="currency"
-            id="currency"
+          <div
             className="Nav__currency-switcher"
-            onClick={onSelectClick}
+            onClick={() => {
+              handleShowCurrencySwitcher();
+              hideCartOverlay();
+            }}
           >
-            {
-              currencies.map(({ label, symbol }) => (
-                <option 
-                  key={label} 
-                  value={symbol}>
-                    {symbol} {' '} 
-                    {label}
-                </option>
-              ))
-            }
-          </select>
+            <p className="Nav__currency-selected">
+              {selectedCurrency}
+            </p>
+            <img
+              src={currenciesArrow}
+              alt="arrow"
+              className={classNames(
+                "Nav__currency-arrow",
+                {"Nav__currency-arrow--open": isCurrencySwitcherShown}
+              )}
+            />
+          </div>
 
-          
-            <div
-              className="Nav__cart"
-              onMouseEnter={() => showCartOverlay()}
-              onClick={() => hideCartOverlay()}
-              >
-              <NavLink to="cart" className="Nav__cart-link">
-                <div className="Nav__cart-count">{productCount}</div>
-                <img src={cart} alt="cart" className="Nav__cart-image"/>
-              </NavLink>
-            </div>
+          <div
+            className="Nav__cart"
+            onClick={() => {
+              showCartOverlay();
+              hideCurrencySwitcher();
+            }}
+            >
+              <div className="Nav__cart-count">{productCount}</div>
+              <img src={cart} alt="cart" className="Nav__cart-image"/>
+          </div>
         </article>
       </>
     );

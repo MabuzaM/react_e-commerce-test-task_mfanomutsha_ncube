@@ -56,3 +56,34 @@ export const client = new ApolloClient({
   link: createHttpLink({ uri: 'http://localhost:4000/' }),
   cache: new InMemoryCache()
 });
+
+export const getProduct = `
+  {
+    product(id: productId) {
+      id
+      name    
+      brand
+      inStock
+      gallery
+      description
+      category
+      attributes {
+        id
+        name
+        type
+        items {
+          displayValue
+          value
+          id
+        }
+      }
+      prices {
+        currency {
+          label
+          symbol
+        }
+        amount
+      }
+    }
+  }
+`

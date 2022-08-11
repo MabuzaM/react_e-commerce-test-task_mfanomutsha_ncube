@@ -16,6 +16,12 @@
   transition: background-color ease-in-out 0.5s,
     box-shadow ease-in-out 0.5s;
 
+  &__outOfStock {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
   &:hover {
     background-color: $c-accentGreen;
     box-shadow: 1px 3px 8px $c-black;

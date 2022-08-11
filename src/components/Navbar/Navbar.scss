@@ -32,27 +32,45 @@
 
   &__controls {
     display: flex;
+    align-items: center;
     gap: 28px;
   }
 
-  &__currency-switcher {
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 160%;
-    border: none;
+  &__currency {
+    &-switcher {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 160%;
+      width: 58px;
+      border: none;
 
-    &:hover {
-      cursor: pointer;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    &-arrow {
+      width: 6px;
+      height: 4px;
+      transform: rotate(180deg);
+
+      &--open {
+        transform: rotate(360deg);
+      }
     }
   }
 
   &__cart {
     display: flex;
     position: relative;
+    width: 20px;
+    height: 20px;
 
-    &-link {
-      text-decoration: none;
-      color: $c-darkGray;
+    &:hover {
+      cursor: pointer;
     }
 
     &-count {

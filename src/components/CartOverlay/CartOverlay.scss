@@ -9,8 +9,10 @@
   top: 0;
   right: 100px;
   padding: 32px 16px;
-  z-index: 5;
+  z-index: 6;
   width: 326px;
+  max-height: 100vh;
+  overflow-y: scroll;
   background-color: $c-white;
   transition: opacity ease-in-out 0.5s,
     visibility ease-in-out 0.5s;
@@ -121,12 +123,6 @@
       height: 24px;
       border: solid 1px $c-darkGray;
 
-      &:hover {
-        background-color: $c-darkGray;
-        color: $c-white;
-        cursor: pointer;
-      }
-
       &--isActive {
         background-color: $c-darkGray;
         color: $c-white;
@@ -137,11 +133,6 @@
       width: 16px;
       height: 16px;
       border: solid 1px $c-darkGray;
-
-      &:hover {
-        border-color: $c-mainGreen;
-        cursor: pointer;
-      }
 
       &--isActive {
         border-color: $c-mainGreen;

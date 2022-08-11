@@ -6,10 +6,6 @@ import { Link } from 'react-router-dom';
 import { calculateCartTotal, renderPrice, getItemsTotal } from '../../helpers/helpers';
 import recycle from '../../icons-svg/recycle.png';
 
-export const getItemCount = (newItemCount) => {
-  return newItemCount;
-};
-
 export class Cart extends React.PureComponent {
   state = {
     itemQuant: 0,
@@ -30,8 +26,7 @@ export class Cart extends React.PureComponent {
 
   componentDidMount() {
     this.setState({
-      cartProducts: [...this.props.productsInCart],
-      itemQuant: this.state.itemQuant + this.props.quantity,
+      cartProducts: [...this.props.productsInCart]
     })
   }
 
@@ -149,7 +144,8 @@ export class Cart extends React.PureComponent {
                                         return <div
                                           className={cn(
                                             "Item__attribute-other",
-                                            {"Item__attribute-other--isActive": product.selectedAttributes[attribute.name] === item.id}
+                                            "Item__attribute--cart",
+                                            {"Item__attribute-other--isActive": product.baseAttributes[attribute.name] === item.id}
                                           )}
                                           onClick={() => this.setState({item2Id: item.id})}
                                         >
@@ -160,7 +156,8 @@ export class Cart extends React.PureComponent {
                                           key={item.id}
                                           className={cn(
                                             "Item__attribute-color",
-                                            {"Item__attribute-color--isActive": product.selectedColor === item.id}
+                                            "Item__attribute--cart",
+                                            {"Item__attribute-color--isActive": product.selectedColor === item.id} 
                                           )}
                                           style={{
                                             backgroundColor: item.value,
@@ -242,7 +239,7 @@ export class Cart extends React.PureComponent {
             {
               productsInCart.length === 0
                 ? (
-                    <Link to="/all" className="Cart__button-link">
+                    <Link to="/home" className="Cart__button-link">
                       <CartButton
                         buttonText={'Continue shopping'}
                         backgroundColor={'#5ece7b'}

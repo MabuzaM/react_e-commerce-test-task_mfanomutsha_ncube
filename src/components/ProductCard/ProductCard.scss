@@ -26,17 +26,25 @@
 
   &__icon {
     position: absolute;
-    right: 52px;
-    bottom: 10px;
+    right: 76px;
+    bottom: 96px;
     opacity: 0;
+    pointer-events: none;
 
     &--visible {
       opacity: 1;
+      pointer-events: all;
+    }
+
+    &--invisible {
+      opacity: 0;
+      pointer-events: none;
     }
   }
 
   &__outofstock {
     position: absolute;
+    top: 0;
     font-weight: 400;
     font-size: 24px;
     line-height: 160%;
@@ -48,16 +56,15 @@
     justify-content: center;
     align-items: center;
     visibility: hidden;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
 
-    &--disabled {
-      opacity: 0.5;
+    &--true {
+      opacity: 1;
       visibility: visible;
       flex-direction: column;
-
-      pointer-events: none;
-      &:hover {
-        pointer-events: none;
-      }
+      pointer-events: all;
     }
   }
 

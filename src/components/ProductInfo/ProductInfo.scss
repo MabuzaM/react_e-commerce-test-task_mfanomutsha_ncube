@@ -1,18 +1,21 @@
 @import '../../../src/sassVariables';
 .ProductInfo {
   display: flex;
-  justify-content: space-between;
 
   &__gallery {
     display: flex;
-    gap: 40px;
     margin-right: 100px;
   }
 
   &__icon-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    margin-right: 40px;
+    row-gap: 32px;
+    max-height: 512px;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    padding: 16px;
 
     &:hover {
       cursor: pointer;
@@ -25,14 +28,14 @@
   }
 
   &__image-wrapper {
-    height: 512px;
-    width: 610px;
+    max-height: 512px;
+    max-width: 610px;
   }
 
   &__image {
     object-fit: cover;
-    object-position: center;
-    width: 610px;
+    width: 90%;
+    height: 90%;
   }
 
   &__success-message{
@@ -62,6 +65,11 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    max-width: 300px;
+    max-height: 600px;
+    padding: 20px;
+    overflow-x: auto;
+    overflow-y: auto;
   }
 
   &__title {
@@ -140,6 +148,10 @@
         background-color: $c-darkGray;
         color: $c-white;
       }
+    }
+
+    &--cart {
+      pointer-events: none;
     }
   }
 

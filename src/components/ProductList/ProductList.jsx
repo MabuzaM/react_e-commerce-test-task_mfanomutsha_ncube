@@ -3,29 +3,43 @@ import '../ProductCard/ProductCard.scss';
 import { renderProducts } from '../../helpers/helpers';
 
 class ProductList extends React.PureComponent {
+  state = {
+    selectedId: '',
+  }
+
   constructor(props) {
     super(props)
     props = {
-      currency: '$',
-      cartProducts: null,
-      onProductClick: () => undefined,
       products: [],
+      currency: '$',
+      onShowAddToCartIcon: () => undefined,
+      onAddToCart: () => undefined,
+      onProductClick: () => undefined,
+      onProductHover: () => undefined,
     };    
+  }
+
+  onShowAddToCartIcon = (id) => {
+    this.setState({selectedId: id});
   }
 
   render () {
     const {
-      currency,
       products,
-      cartProducts,
-      onProductClick
+      currency,
+      onAddToCart,
+      onProductClick,
+      onProductHover
     } = this.props;
 
     return (renderProducts(
         products,
         currency,
-        cartProducts,
+        this.state.selectedId,
+        this.onShowAddToCartIcon,
+        onAddToCart,
         onProductClick,
+        onProductHover
       ));
   }
 

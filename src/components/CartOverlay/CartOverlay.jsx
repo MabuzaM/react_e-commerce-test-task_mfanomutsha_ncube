@@ -27,18 +27,17 @@ export class CartOverlay extends React.PureComponent {
   componentDidMount() {
     this.setState({
       cartProducts: [...this.props.productsInCart],
-      itemQuant: this.state.itemQuant + this.props.quantity,
     })
   }
 
   decrementItemCount = (cartItem, itemPrice) => {
-    const itemInCart = this.state.cartProducts.find(product => product.id === cartItem.id);
+    const itemInCart = this.state.cartProducts.find(product => product?.id === cartItem.id);
 
     if (itemInCart && itemInCart.itemCount >= 1) {
       itemInCart.itemCount--;
       itemInCart.price = itemInCart.price -= itemPrice;
       this.setState({
-        cartProducts: [...this.state.cartProducts.filter(cartProduct => cartProduct.id !== itemInCart.id), itemInCart],
+        cartProducts: [...this.state.cartProducts.filter(cartProduct => cartProduct?.id !== itemInCart.id), itemInCart],
         itemQuant: this.state.itemQuant - 1,
       });
 
@@ -110,8 +109,8 @@ export class CartOverlay extends React.PureComponent {
                           <div className="Overlay-Item__attribute">
                             {
                               attributes?.map((attribute) => {
-                                return <React.Fragment key={attribute.id}>
-                                  <p className="Overlay-Item__attribute-title" key={attribute.id}>{attribute.name}:</p>
+                                return <React.Fragment key={attribute?.id}>
+                                  <p className="Overlay-Item__attribute-title" key={attribute?.id}>{attribute?.name}:</p>
                                   <div className="Overlay-Item__attribute-wraper">
                                     {
                                       attribute?.items?.map((item) => {
@@ -119,7 +118,7 @@ export class CartOverlay extends React.PureComponent {
                                           ? (<div
                                             className={cn(
                                               "Overlay-Item__attribute-other",
-                                              {"Overlay-Item__attribute-other--isActive": product.selectedAttributes[attribute.name] === item.id}
+                                              {"Overlay-Item__attribute-other--isActive": product?.baseAttributes[attribute.name] === item.id}
                                             )}
                                             onClick={() => this.setState({item2Id: item.id})}
                                           >
@@ -156,7 +155,9 @@ export class CartOverlay extends React.PureComponent {
                             <p className="Overlay-Item__quant">{product.itemCount}</p>
                             <div
                               className="Overlay-Item__decrement"
-                              onClick={() => this.decrementItemCount(product, itemPrice)}
+                              onClick={() => {
+                                this.decrementItemCount(product, itemPrice)
+                              }}
                             >
                               {
                                 product.itemCount === 1
@@ -189,7 +190,7 @@ export class CartOverlay extends React.PureComponent {
             {
               productsInCart.length === 0
                 ? (
-                    <Link to="/all" className="CartOverlay__button-link"  onClick={() => hideCartOverlay()}>
+                    <Link to="/home" className="CartOverlay__button-link"  onClick={() => hideCartOverlay()}>
                       <CartButton
                         buttonText={'Continue shopping'}
                         backgroundColor={'#5ece7b'}
