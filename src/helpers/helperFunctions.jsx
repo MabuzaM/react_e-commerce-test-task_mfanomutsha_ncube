@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import cn from 'classnames';
-import InCartIcon from '../icons-svg/InCartIcon.svg';
+import AddToCartIcon from '../icons-svg/addToCartIcon.svg';
 
 export const renderPrice = (prices, currency) => {
   return prices?.find(price => price.currency.symbol === currency).amount;
@@ -24,13 +24,6 @@ export const renderProducts = (
       name,
       brand,
     } = product;
-    const baseColor = product.attributes.map(attribute => {
-      if (attribute.name === 'Color') {
-        return attribute.items[0].id
-      }
-
-      return null;          
-    }).join('');
 
     const baseAttributes = product.attributes.reduce((allBaseAttributes, attribute) => ({
       ...allBaseAttributes,
@@ -49,7 +42,7 @@ export const renderProducts = (
           <Link
             to={`/productid/:${id}`}
             className={cn("ProductCard__link", {"ProductCard__outofstock--disabled": !product.inStock})}
-            onClick={() => getProduct(product)}
+            onClick={() => getProduct(product, baseAttributes)}
           >
             <div className="ProductCard__image-wrapper">
               <img
@@ -61,12 +54,10 @@ export const renderProducts = (
             
             <p className="ProductCard__title">
               {brand}
-              {baseColor}
             </p>
 
             <p className="ProductCard__title">
               {name}
-              {}
             </p>
 
             <p className="ProductCard__price">
@@ -82,13 +73,14 @@ export const renderProducts = (
           </Link>
          
           <img
-            src={InCartIcon}
+            src={AddToCartIcon}
             alt="Add to cart icon overlay"
             className={cn("ProductCard__icon", {
               "ProductCard__icon--visible": id === selectedProductId,
               "ProductCard__icon--invisible": !product.inStock,
             })}
             onClick={() => onAddToCart(
+              product,
               baseAttributes,
               renderPrice(prices, currency)
             )}

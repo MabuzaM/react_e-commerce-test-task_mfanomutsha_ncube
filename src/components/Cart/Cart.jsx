@@ -3,7 +3,7 @@ import { CartButton } from '../CartButton/CartButton';
 import './Cart.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
-import { calculateCartTotal, renderPrice, getItemsTotal } from '../../helpers/helpers';
+import { calculateCartTotal, renderPrice, getItemsTotal } from '../../helpers/helperFunctions';
 import recycle from '../../icons-svg/recycle.png';
 
 export class Cart extends React.PureComponent {
@@ -33,7 +33,7 @@ export class Cart extends React.PureComponent {
   decrementItemCount = (cartItem, itemPrice) => {
     const itemInCart = this.state.cartProducts.find(product => product.id === cartItem.id);
 
-    if (itemInCart && itemInCart.itemCount >= 1) {
+    if (itemInCart && itemInCart.itemCount >= 2) {
       itemInCart.itemCount--;
       itemInCart.price = itemInCart.price -= itemPrice;
       this.setState({
@@ -42,9 +42,7 @@ export class Cart extends React.PureComponent {
       });
 
       this.props.changeCartQuantity(this.state.itemQuant);
-    }
-
-    if (itemInCart.itemCount === 0) {
+    } else {
       this.props.onDeleteItem(itemInCart);
     }
   }
@@ -157,7 +155,7 @@ export class Cart extends React.PureComponent {
                                           className={cn(
                                             "Item__attribute-color",
                                             "Item__attribute--cart",
-                                            {"Item__attribute-color--isActive": product.selectedColor === item.id} 
+                                            {"Item__attribute-color--isActive": product.baseColor === item.value} 
                                           )}
                                           style={{
                                             backgroundColor: item.value,

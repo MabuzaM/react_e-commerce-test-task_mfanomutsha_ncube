@@ -1,6 +1,6 @@
 import React from 'react';
 import './Order.scss';
-import { calculateCartTotal, getItemsTotal, renderPrice } from '../../helpers/helpers';
+import { calculateCartTotal, getItemsTotal, renderPrice } from '../../helpers/helperFunctions';
 
 export class Order extends React.PureComponent {
   state = {
@@ -51,7 +51,7 @@ export class Order extends React.PureComponent {
                     <td className="Order__table-row--data">{product.selectedColor || 'None'}</td>
                     <td className="Order__table-row--data">
                       {
-                        Object.entries(product.selectedAttributes)
+                        Object.entries(product.baseAttributes)
                         .join('  |  ') || 'None'                      
                       }
                     </td>

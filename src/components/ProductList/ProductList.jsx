@@ -1,6 +1,6 @@
 import React from 'react';
 import '../ProductCard/ProductCard.scss';
-import { renderProducts } from '../../helpers/helpers';
+import { renderProducts } from '../../helpers/helperFunctions';
 
 class ProductList extends React.PureComponent {
   state = {

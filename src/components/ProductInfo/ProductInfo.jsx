@@ -2,9 +2,8 @@ import React from 'react';
 import './ProductInfo.scss';
 import '../CartButton/CartButton.scss'
 import cn from 'classnames';
-import { checkOtherAttributesInProduct, checkProductColor, renderPrice, checkOtherAttributesAndColor } from '../../helpers/helpers';
+import { renderPrice, checkOtherAttributesAndColor } from '../../helpers/helperFunctions';
 import { sanitize } from 'dompurify';
-import { client, getProduct } from '../../api/api';
 
 export class ProductInfo extends React.PureComponent {
   state = {
@@ -13,7 +12,6 @@ export class ProductInfo extends React.PureComponent {
     id: '',
     imageSrc: '',
     colorId: '',
-    otherAttributes: {},
     allAttributes: {},
     isVisible: false,
   }
@@ -39,12 +37,8 @@ export class ProductInfo extends React.PureComponent {
     this.setState({colorId: id})
   };
 
-  otherAttributesIdSetter = (name, id) => {
-    this.setState({otherAttributes: {...this.state.otherAttributes, [name]: id}});
-  };
-
-  allAttributesIdSetter = (name, id) => {
-    this.setState({allAttributes: {...this.state.allAttributes, [name]: id}});
+  allAttributesIdSetter = (name, value) => {
+    this.setState({allAttributes: {...this.state.allAttributes, [name]: value}});
   };
 
   render () {
@@ -57,14 +51,12 @@ export class ProductInfo extends React.PureComponent {
       product,
       imageSrc,
       colorId,
-      otherAttributes,
       allAttributes,
       isVisible,
     } = this.state;
 
     const {
       colorIdSetter,
-      otherAttributesIdSetter,
       allAttributesIdSetter,
     } = this;
 
@@ -122,12 +114,11 @@ export class ProductInfo extends React.PureComponent {
                         return <div
                           className={cn(
                             "Item__attribute-other",
-                            {"Item__attribute-other--isActive": otherAttributes[attribute?.name] === item?.id},
+                            {"Item__attribute-other--isActive": allAttributes[attribute?.name] === item?.value},
                           )}
                     
                           onClick={() => {
-                            otherAttributesIdSetter(attribute?.name, item?.id);
-                            allAttributesIdSetter(attribute?.name, item?.id);
+                            allAttributesIdSetter(attribute?.name, item?.value);
                           }}
                         >
                           {item?.displayValue}
@@ -137,14 +128,14 @@ export class ProductInfo extends React.PureComponent {
                           key={item?.id}
                           className={cn(
                             "Item__attribute-color",
-                            {"Item__attribute-color--isActive": colorId === item?.id}
+                            {"Item__attribute-color--isActive": colorId === item?.value}
                           )}
                           style={{
                             backgroundColor: item?.value,
                           }}
                           onClick={() => {
-                            colorIdSetter(item?.id);
-                            allAttributesIdSetter(attribute?.name, item?.id);
+                            colorIdSetter(item?.value);
+                            allAttributesIdSetter(attribute?.name, item?.value);
                           }}
                         >
                         </div>
@@ -168,15 +159,14 @@ export class ProductInfo extends React.PureComponent {
             className={cn("CartButton", {"CartButton__outOfStock": !product?.inStock})}
             type="button"
             onClick={() => {
-              console.log(checkOtherAttributesAndColor(product))
                 if (checkOtherAttributesAndColor(product).length === Object.values(allAttributes).length) {
                   onAddToCart(
+                    product,
                     allAttributes,
                     renderPrice(product?.prices, currency)
                   )
                   this.setState({isVisible: true})
                 }
-                console.log(allAttributes)
                 return;
             }}
             onMouseOut={() => this.setState({isVisible: false})}

@@ -6,6 +6,8 @@ body {
   margin: 0 auto;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 p,
@@ -24,8 +26,4 @@ li {
 .ProductCard__link {
   text-decoration: none;
   color: #1d1f22;
-}
-
-.Nav__cart:hover ~ .CartOverlay {
-  display: none;
 }

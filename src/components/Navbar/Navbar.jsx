@@ -3,7 +3,7 @@ import './Navbar.scss';
 import logo from '../../icons-svg/a-logo.svg';
 import currenciesArrow from '../../icons-svg/currenciesButton.svg';
 import cart from '../../icons-svg/empty-cart.svg';
-import { CATEGORIES_QUERY, CURRENCIES_QUERY, client } from '../../api/api';
+import { CATEGORIES_QUERY, client } from '../../api/graphQL';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -36,12 +36,6 @@ export class Navbar extends React.PureComponent {
           .filter(category => category.name !== 'all')]
       })
     }) 
-
-    client.query({
-      query: CURRENCIES_QUERY,
-    }).then(({loading, error, data }) => {
-      this.setState({currencies: data.currencies})
-    })  
   }
 
   render () {

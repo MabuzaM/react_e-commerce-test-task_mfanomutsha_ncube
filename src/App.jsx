@@ -7,7 +7,7 @@ import { CurrencySwitcher } from './components/CurrencySwticher/CurrencySwitcher
 import { Cart } from './components/Cart/Cart';
 import { ApolloProvider } from 'react-apollo';
 import { ProductInfo } from './components/ProductInfo/ProductInfo';
-import { client, PRODUCTS, CURRENCIES_QUERY, CATEGORIES_QUERY } from '../src/api/api';
+import { client, PRODUCTS, CURRENCIES_QUERY, CATEGORIES_QUERY } from './api/graphQL';
 import {Routes, Route, Navigate, NavLink} from 'react-router-dom';
 import { Order } from './components/Order/Order';
 import cn from 'classnames';
@@ -20,8 +20,6 @@ class App extends React.PureComponent {
     productInfo: null,
     cartProducts: [],
     productCount: 0,
-    itemCount: 1,
-    products: [],
     categoryProducts: [],
     quantity: 0,
     isCartVisible: false,
@@ -47,12 +45,16 @@ class App extends React.PureComponent {
     client.query({
       query: CURRENCIES_QUERY,
     }).then(({loading, error, data }) => {
+      if (loading && !data) this.setState({loading: 'Please wait while we fetch currencies!'})
+      if (error) this.setState({errorState: `Oops! Something went wrong with fetching currencies: ${error}`})
       this.setState({currencies: data.currencies})
     })
 
     client.query({
       query: CATEGORIES_QUERY,
     }).then(({loading, error, data }) => {
+      if (loading && !data) this.setState({loading: 'Please wait while we fetch categories!'})
+      if (error) this.setState({errorState: `Oops! Something went wrong with fetching categories: ${error}`})
       this.setState({
         categories: [...this.state.categories, ...data.categories
           .filter(category => category.name !== 'all')]
@@ -83,10 +85,27 @@ class App extends React.PureComponent {
     this.setState({isCartVisible: false});
   }
 
-  handleProductClick = (selectedProduct) => {
-    this.setState({
-      productInfo: selectedProduct
-    });
+  handleProductClick = (selectedProduct, allAttributes) => {
+    const itemWithColor = selectedProduct.attributes.find(attribute => attribute.name === 'Color');
+
+    if (itemWithColor) {
+      this.setState({
+        productInfo: {
+          ...selectedProduct,
+          itemCount: 1,
+          baseColor: allAttributes.Color,
+          baseAttributes: allAttributes && (allAttributes),
+        }
+      });
+    } else {
+      this.setState({
+        productInfo: {
+          ...selectedProduct,
+          itemCount: 1,
+          baseAttributes: allAttributes && (allAttributes),
+        }
+      });
+    }
   }
 
   handleProductHover = (selectedProduct, allAttributes) => {
@@ -112,9 +131,9 @@ class App extends React.PureComponent {
     }
   }
 
-  handleAddToCartClick = (selectedAttributes, price) => {
+  handleAddToCartWithBaseAttributes = (selectedProduct, selectedAttributes, price) => {
     const itemInCart = this.state.cartProducts
-      .find(product => product.id === this.state.productInfo.id && Object.values(product?.baseAttributes)
+      .find(product => product.id === selectedProduct.id && Object.values(product?.baseAttributes)
       .toString() === Object.values(selectedAttributes)
       .toString())
     if (itemInCart)
@@ -132,16 +151,43 @@ class App extends React.PureComponent {
         cartProducts: [...this.state.cartProducts,
           {...this.state.productInfo,
             itemCount: 1,
-            selectedColor: selectedAttributes.Color,
+            baseColor: selectedAttributes.Color,
             baseAttributes: selectedAttributes && (selectedAttributes),
           }],
         productCount: this.state.productCount + 1,
         quantity: this.state.quantity + 1      
       });
     }
-
-    console.log(itemInCart);
   };
+
+  handleAddToCartClick = (selectedProduct, selectedAttributes, price) => {
+    const itemInCart = this.state.cartProducts
+      .find(product => product.id === selectedProduct.id && Object.values(product?.baseAttributes)
+      .toString() === Object.values(selectedAttributes)
+      .toString())
+    if (itemInCart)
+    {
+      itemInCart.itemCount++;
+      itemInCart.price = itemInCart.price += price;
+      this.setState({
+        cartProducts: [...this.state.cartProducts
+          .filter(cartProduct => cartProduct.id !== itemInCart.id), itemInCart],
+        quantity: this.state.quantity + 1,
+      });
+    } else {
+      this.setState({
+        cartProducts: [...this.state.cartProducts,
+          {...this.state.productInfo,
+            itemCount: 1,
+            baseColor: selectedAttributes.Color,
+            baseAttributes: selectedAttributes && (selectedAttributes),
+          }],
+        productCount: this.state.productCount + 1,
+        quantity: this.state.quantity + 1      
+      });
+    }
+  };
+
 
   handleColorSelect = (colorId) => {
     this.setState({colorId: colorId})
@@ -194,6 +240,7 @@ class App extends React.PureComponent {
     const {
       handleSelectClick,
       handleProductClick,
+      handleAddToCartWithBaseAttributes,
       handleAddToCartClick,
       changeCartQuantity,
       removeItemFromCart,
@@ -205,7 +252,7 @@ class App extends React.PureComponent {
       handleProductHover,
       handleRouteChange,
     } = this;
-
+    console.log(productInfo)
     const productsByCategory = categoryProducts
       .filter(product => product.category === this.state.selectedCategory)
 
@@ -228,6 +275,16 @@ class App extends React.PureComponent {
           </header>
 
             <main className="App__main">
+              {
+                <CartOverlay
+                  productsInCart={cartProducts}
+                  currency={selectedCurrency}
+                  changeCartQuantity={changeCartQuantity}
+                  onDeleteItem={removeItemFromCart}
+                  isCartVisible={isCartVisible}
+                  hideCartOverlay={handleHideCartOverlay}
+                />
+              }
               <div
                 className={cn(
                   "App__background",
@@ -235,17 +292,7 @@ class App extends React.PureComponent {
                 )}
                 onClick={() => handleHideCartOverlay()}
               >
-                {
-                  <CartOverlay
-                    productsInCart={cartProducts}
-                    currency={selectedCurrency}
-                    changeCartQuantity={changeCartQuantity}
-                    onDeleteItem={removeItemFromCart}
-                    isCartVisible={isCartVisible}
-                    hideCartOverlay={handleHideCartOverlay}
-                  />
-                }
-              
+             
                 <CurrencySwitcher
                   currencies={currencies}
                   isCurrencySwitcherShown={isCurrencySwitcherShown}
@@ -272,7 +319,7 @@ class App extends React.PureComponent {
                                 name && (name)
                               }
                             </NavLink>
-                          ))
+                          )) || this.state.errorState || this.state.loading
                         }
                       </div>
                     </>
@@ -281,7 +328,7 @@ class App extends React.PureComponent {
 
                 {
                   <Route
-                    path={`${selectedCategory}`}
+                    path={`/${selectedCategory}`}
                     element={
                       <>
                         <h1 className="App__heading">{`${selectedCategory}`}</h1>
@@ -292,8 +339,8 @@ class App extends React.PureComponent {
                               currency={selectedCurrency}
                               onProductClick={handleProductClick}
                               onProductHover={handleProductHover}
-                              onAddToCart={handleAddToCartClick}
-                            /> || <h3>this.state.loading</h3>
+                              onAddToCart={handleAddToCartWithBaseAttributes}
+                            /> || <h3>{this.state.loading}</h3>
                           }
                         </div>
                       </>
