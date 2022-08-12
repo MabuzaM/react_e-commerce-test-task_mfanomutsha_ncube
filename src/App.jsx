@@ -23,8 +23,6 @@ class App extends React.PureComponent {
     categoryProducts: [],
     quantity: 0,
     isCartVisible: false,
-    colorId: '',
-    otherAttributes: {},
     isCurrencySwitcherShown: false,
     selectedCategory: '',
     loading: '',
@@ -143,7 +141,9 @@ class App extends React.PureComponent {
 
       this.setState({
         cartProducts: [...this.state.cartProducts
-          .filter(cartProduct => cartProduct.id !== itemInCart.id), itemInCart],
+          .filter(cartProduct => cartProduct.id !== itemInCart.id && Object.values(cartProduct?.baseAttributes)
+          .toString() === Object.values(selectedProduct.baseAttributes)
+            .toString()), itemInCart],
         quantity: this.state.quantity + 1,
       });
     } else {
@@ -163,15 +163,17 @@ class App extends React.PureComponent {
   handleAddToCartClick = (selectedProduct, selectedAttributes, price) => {
     const itemInCart = this.state.cartProducts
       .find(product => product.id === selectedProduct.id && Object.values(product?.baseAttributes)
-      .toString() === Object.values(selectedAttributes)
-      .toString())
+        .toString() === Object.values(selectedAttributes)
+          .toString())
     if (itemInCart)
     {
       itemInCart.itemCount++;
       itemInCart.price = itemInCart.price += price;
       this.setState({
         cartProducts: [...this.state.cartProducts
-          .filter(cartProduct => cartProduct.id !== itemInCart.id), itemInCart],
+          .filter(cartProduct => cartProduct.id !== itemInCart.id && Object.values(cartProduct?.baseAttributes)
+          .toString() === Object.values(selectedProduct.baseAttributes)
+            .toString()), itemInCart],
         quantity: this.state.quantity + 1,
       });
     } else {
@@ -188,7 +190,6 @@ class App extends React.PureComponent {
     }
   };
 
-
   handleColorSelect = (colorId) => {
     this.setState({colorId: colorId})
   };
@@ -203,14 +204,6 @@ class App extends React.PureComponent {
   changeCartQuantity = (quant) => {
     this.setState({quantity: quant})
   }
-
-  colorIdSetter = (id) => {
-    this.setState({colorId: id})
-  };
-
-  otherAttributesIdSetter = (name, id) => {
-    this.setState({otherAttributes: {...this.state.otherAttributes, [name]: id}});
-  };
 
   handleShowCurrencySwitcher = () => {
     this.setState({isCurrencySwitcherShown: !this.state.isCurrencySwitcherShown})
@@ -252,7 +245,7 @@ class App extends React.PureComponent {
       handleProductHover,
       handleRouteChange,
     } = this;
-    console.log(productInfo)
+
     const productsByCategory = categoryProducts
       .filter(product => product.category === this.state.selectedCategory)
 
@@ -314,6 +307,7 @@ class App extends React.PureComponent {
                               to={`/${name}`} 
                               className="App__links Nav__link"
                               onClick={() => handleRouteChange(name)}
+                              key={name}
                             >
                               {
                                 name && (name)

@@ -106,12 +106,13 @@ export class ProductInfo extends React.PureComponent {
             {
               product?.attributes?.map((attribute) => {
                 return <React.Fragment>
-                  <p className="Item__attribute-title">{attribute?.name}:</p>
-                  <div className="Item__attribute-wraper" key={attribute?.id}>
+                  <p className="Item__attribute-title"  key={attribute?.id}>{attribute?.name}:</p>
+                  <div className="Item__attribute-wraper">
                   {
                     attribute?.items?.map((item) => {
                       if (attribute?.name !== 'Color') {
                         return <div
+                          key={item.id}
                           className={cn(
                             "Item__attribute-other",
                             {"Item__attribute-other--isActive": allAttributes[attribute?.name] === item?.value},

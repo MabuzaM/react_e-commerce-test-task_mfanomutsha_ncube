@@ -147,7 +147,6 @@ export class CartOverlay extends React.PureComponent {
                             className="Overlay-Item__increment"
                             onClick={() => {
                               incrementItemCount(product, itemPrice)
-                              // console.log(product.itemCount++)
                             }}
                           >
                             +
@@ -157,7 +156,6 @@ export class CartOverlay extends React.PureComponent {
                             className="Overlay-Item__decrement"
                             onClick={() => {
                               decrementItemCount(product, itemPrice)
-                              // console.log(product.itemCount--)
                             }}
                           >
                             {
