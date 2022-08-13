@@ -130,19 +130,36 @@ class App extends React.PureComponent {
   }
 
   handleAddToCartWithBaseAttributes = (selectedProduct, selectedAttributes, price) => {
-    const itemInCart = this.state.cartProducts
-      .find(product => product.id === selectedProduct.id && Object.values(product?.baseAttributes)
-      .toString() === Object.values(selectedAttributes)
-      .toString())
+    let itemInCart;
+
+    if (this.state.cartProducts) {
+    itemInCart = this.state.cartProducts?.find(
+      product => product?.id === selectedProduct?.id &&
+      Object.values(product?.baseAttributes).toString() === Object.values(selectedAttributes).toString())
+    } else {
+      this.setState({
+        cartProducts: [...this.state.cartProducts,
+          {...this.state.productInfo,
+            itemCount: 1,
+            imgUrlIndex: 0,
+            baseColor: selectedAttributes.Color,
+            baseAttributes: selectedAttributes && (selectedAttributes),
+          }],
+        productCount: this.state.productCount + 1,
+        quantity: this.state.quantity + 1      
+      });
+    }
+
     if (itemInCart)
     {
       itemInCart.itemCount++;
       itemInCart.price = itemInCart.price += price;
 
+      
       this.setState({
-        cartProducts: [...this.state.cartProducts
-          .filter(cartProduct => cartProduct.id !== itemInCart.id && Object.values(cartProduct?.baseAttributes)
-          .toString() === Object.values(selectedProduct.baseAttributes)
+        cartProducts: [...this.state.cartProducts?.filter(
+          cartProduct => cartProduct?.id !== itemInCart?.id &&
+          Object.values(cartProduct?.baseAttributes).toString() === Object.values(selectedProduct?.baseAttributes)
             .toString()), itemInCart],
         quantity: this.state.quantity + 1,
       });
@@ -151,6 +168,7 @@ class App extends React.PureComponent {
         cartProducts: [...this.state.cartProducts,
           {...this.state.productInfo,
             itemCount: 1,
+            imgUrlIndex: 0,
             baseColor: selectedAttributes.Color,
             baseAttributes: selectedAttributes && (selectedAttributes),
           }],
@@ -181,6 +199,7 @@ class App extends React.PureComponent {
         cartProducts: [...this.state.cartProducts,
           {...this.state.productInfo,
             itemCount: 1,
+            imgUrlIndex: 0,
             baseColor: selectedAttributes.Color,
             baseAttributes: selectedAttributes && (selectedAttributes),
           }],

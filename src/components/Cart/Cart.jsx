@@ -9,9 +9,8 @@ import recycle from '../../icons-svg/recycle.png';
 export class Cart extends React.PureComponent {
   state = {
     itemQuant: 0,
-    imgUrlIndex: 0,
     cartProducts: [],
-    selectedProduct: null,
+    productSelected: null,
   };
 
   constructor(props) {
@@ -62,29 +61,29 @@ export class Cart extends React.PureComponent {
     }
   }
 
-  slideThroughImages = (operator, gallery) => {
-    if (this.state.imgUrlIndex >= 0 && this.state.imgUrlIndex < gallery.length - 1) {
+  slideThroughImages = (operator, selectedProduct) => {
+    if (selectedProduct?.imgUrlIndex >= 0) {
       switch(operator) {
         case '+':
-          this.setState({imgUrlIndex: this.state.imgUrlIndex + 1});
+          if (selectedProduct.imgUrlIndex < selectedProduct?.gallery?.length - 1) {
+            this.setState({productSelected: {...selectedProduct.imgUrlIndex += 1}});
+          }
           break;
         
         case '-':
-          this.setState({imgUrlIndex: this.state.imgUrlIndex - 1});
+          if (selectedProduct.imgUrlIndex > 0) {
+            this.setState({productSelected: {...selectedProduct.imgUrlIndex -= 1}});
+          }
           break;
 
         default:;
       }
-    } else {
-      this.setState({imgUrlIndex: 0});
     }
   };
 
   render () {
     const {
-      imgUrlIndex,
       cartProducts,
-      selectedProduct,
     } = this.state;
 
     const { 
@@ -93,6 +92,8 @@ export class Cart extends React.PureComponent {
     } = this.props;
 
     const cartTotal = calculateCartTotal(productsInCart, currency);
+
+    console.log(cartProducts);
 
     return (
       <>
@@ -193,18 +194,18 @@ export class Cart extends React.PureComponent {
                             </div>
                             <div className="Item__image-slider">
                               <img src={
-                                imgUrlIndex < 0
+                                product.imgUrlIndex < 0
                                   ? (gallery[0])
-                                  : (gallery[imgUrlIndex])
+                                  : (gallery[product?.imgUrlIndex])
                               } alt="Item" className="Item__image" />
                               <div className="Item__slider-controls">
                                 <div className="Item__slider-controls--previous" onClick={() => {
-                                    this.setState({selectedProduct: product});
-                                    this.slideThroughImages('-', selectedProduct?.gallery);
-                                  }}>&lt;</div>
+                                  this.setState({selectedProduct: product});
+                                  this.slideThroughImages('-', product);
+                                }}>&lt;</div>
                                 <div className="Item__slider-controls--next" onClick={() => {
                                   this.setState({selectedProduct: product});
-                                  this.slideThroughImages('+', selectedProduct?.gallery);
+                                  this.slideThroughImages('+', product);
                                 }}>&gt;</div>
                               </div>
                             </div>

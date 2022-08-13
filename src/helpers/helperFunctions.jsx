@@ -25,9 +25,9 @@ export const renderProducts = (
       brand,
     } = product;
 
-    const baseAttributes = product.attributes.reduce((allBaseAttributes, attribute) => ({
+    const baseAttributes = product?.attributes?.reduce((allBaseAttributes, attribute) => ({
       ...allBaseAttributes,
-      [attribute.name]: attribute.items[0].value
+      [attribute?.name]: attribute?.items[0]?.value
     }), {})
 
     return (
@@ -41,7 +41,7 @@ export const renderProducts = (
         >
           <Link
             to={`/productid/:${id}`}
-            className={cn("ProductCard__link", {"ProductCard__outofstock--disabled": !product.inStock})}
+            className={cn("ProductCard__link", {"ProductCard__outofstock--disabled": !product?.inStock})}
             onClick={() => getProduct(product, baseAttributes)}
           >
             <div className="ProductCard__image-wrapper">
@@ -66,7 +66,7 @@ export const renderProducts = (
 
             <div className={cn(
               "ProductCard__outofstock",
-              {"ProductCard__outofstock--true": !product.inStock}
+              {"ProductCard__outofstock--true": !product?.inStock}
             )}>
               <p className="ProductCard__outofstock--text">Out of stock</p>
             </div>
@@ -77,7 +77,7 @@ export const renderProducts = (
             alt="Add to cart icon overlay"
             className={cn("ProductCard__icon", {
               "ProductCard__icon--visible": id === selectedProductId,
-              "ProductCard__icon--invisible": !product.inStock,
+              "ProductCard__icon--invisible": !product?.inStock,
             })}
             onClick={() => onAddToCart(
               product,
@@ -104,14 +104,6 @@ export const getItemsTotal = (productsInCart) => {
   return productsInCart.map(product => product.itemCount)
     .reduce((productCount1, productCount2) => productCount1 + productCount2, 0)
     .toFixed(2);
-}
-
-export const checkProductColor = (product) => {
-  return product.attributes.find(attribute => attribute.type === 'swatch');
-}
-
-export const checkOtherAttributesInProduct = (product) => {
-  return product.attributes.find(attribute => attribute.type === 'text');
 }
 
 export const checkOtherAttributesAndColor = (product) => {
