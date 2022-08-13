@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { Link } from 'react-router-dom';
 import { calculateCartTotal, renderPrice, getItemsTotal } from '../../helpers/helperFunctions';
 import recycle from '../../icons-svg/recycle.png';
+import classNames from 'classnames';
 
 export class Cart extends React.PureComponent {
   state = {
@@ -194,19 +195,34 @@ export class Cart extends React.PureComponent {
                             </div>
                             <div className="Item__image-slider">
                               <img src={
-                                product.imgUrlIndex < 0
+                                product.imgUrlIndex < 0 || product.imgUrlIndex >= product.gallery.length - 1
                                   ? (gallery[0])
                                   : (gallery[product?.imgUrlIndex])
                               } alt="Item" className="Item__image" />
                               <div className="Item__slider-controls">
-                                <div className="Item__slider-controls--previous" onClick={() => {
-                                  this.setState({selectedProduct: product});
-                                  this.slideThroughImages('-', product);
-                                }}>&lt;</div>
-                                <div className="Item__slider-controls--next" onClick={() => {
-                                  this.setState({selectedProduct: product});
-                                  this.slideThroughImages('+', product);
-                                }}>&gt;</div>
+                                <div
+                                  className={classNames(
+                                    "Item__slider-controls-previous",
+                                    {"Item__slider-controls-previous--disabled": product.imgUrlIndex === 0}
+                                  )}
+                                  onClick={() => {
+                                    this.setState({selectedProduct: product});
+                                    this.slideThroughImages('-', product);
+                                  }}>
+                                  &lt;
+                                </div>
+
+                                <div
+                                  className={classNames(
+                                    "Item__slider-controls-next",
+                                    {"Item__slider-controls-next--disabled": product.imgUrlIndex === product.gallery.length - 1}
+                                  )}
+                                  onClick={() => {
+                                    this.setState({selectedProduct: product});
+                                    this.slideThroughImages('+', product);
+                                  }}>
+                                  &gt;
+                                </div>
                               </div>
                             </div>
                           </div>

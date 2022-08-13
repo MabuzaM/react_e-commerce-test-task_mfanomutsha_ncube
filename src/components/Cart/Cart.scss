@@ -126,8 +126,8 @@
     gap: 8px;
     opacity: 0.75;
 
-    &--previous,
-    &--next {
+    &-previous,
+    &-next {
       justify-content: center;
       align-items: center;
       text-align: center;
@@ -141,6 +141,13 @@
         cursor: pointer;
         transform: scale(102%);
       }
+    }
+
+    &-previous--disabled,
+    &-next--disabled {
+      pointer-events: none;
+      background-color: #eee;
+      color: #cfcfcf;
     }
   }
 }

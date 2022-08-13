@@ -154,7 +154,6 @@ class App extends React.PureComponent {
     {
       itemInCart.itemCount++;
       itemInCart.price = itemInCart.price += price;
-
       
       this.setState({
         cartProducts: [...this.state.cartProducts?.filter(
