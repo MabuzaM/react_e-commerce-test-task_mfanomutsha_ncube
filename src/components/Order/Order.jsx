@@ -48,7 +48,7 @@ export class Order extends React.PureComponent {
                     <td className="Order__table-row--data">{product.itemCount}</td>
                     <td className="Order__table-row--data">{product.name}</td>
                     <td className="Order__table-row--data">{`${currency} ${renderPrice(product.prices, currency)}`}</td>
-                    <td className="Order__table-row--data">{product.selectedColor || 'None'}</td>
+                    <td className="Order__table-row--data">{product.baseColor || 'None'}</td>
                     <td className="Order__table-row--data">
                       {
                         Object.entries(product.baseAttributes)

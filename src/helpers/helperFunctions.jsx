@@ -12,7 +12,7 @@ export const renderProducts = (
   currency,
   selectedProductId,
   onShowAddToCartIcon=() => undefined,
-  onAddToCart=() => undefined,
+  onAddToCartIconClick=() => undefined,
   getProduct=() => undefined,
   onProductHover=() => undefined,
 ) => {
@@ -79,7 +79,7 @@ export const renderProducts = (
               "ProductCard__icon--visible": id === selectedProductId,
               "ProductCard__icon--invisible": !product?.inStock,
             })}
-            onClick={() => onAddToCart(
+            onClick={() => onAddToCartIconClick(
               product,
               baseAttributes,
               renderPrice(prices, currency)

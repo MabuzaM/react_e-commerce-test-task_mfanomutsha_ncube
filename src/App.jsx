@@ -83,14 +83,32 @@ class App extends React.PureComponent {
     this.setState({isCartVisible: false});
   }
 
+  checkIfProductIsInCart = (selectedProduct, selectedAttributes) => {
+    if (this.state.cartProducts !== []) {
+      return this.state.cartProducts?.find(
+        product => product.id === selectedProduct.id &&
+        String(Array.from(Object.values(
+          product?.baseAttributes
+        ))) === String(Array.from(Object.values(
+          selectedAttributes
+        )))
+      )        
+    }
+
+    return null;
+  }
+
   handleProductClick = (selectedProduct, allAttributes) => {
     const itemWithColor = selectedProduct.attributes.find(attribute => attribute.name === 'Color');
+    const productCount = this.checkIfProductIsInCart(selectedProduct, allAttributes)
+      ? (this.checkIfProductIsInCart(selectedProduct, allAttributes).itemCount)
+      : (1)
 
     if (itemWithColor) {
       this.setState({
         productInfo: {
           ...selectedProduct,
-          itemCount: 1,
+          itemCount: productCount,
           baseColor: allAttributes.Color,
           baseAttributes: allAttributes && (allAttributes),
         }
@@ -99,7 +117,7 @@ class App extends React.PureComponent {
       this.setState({
         productInfo: {
           ...selectedProduct,
-          itemCount: 1,
+          itemCount: productCount,
           baseAttributes: allAttributes && (allAttributes),
         }
       });
@@ -132,18 +150,16 @@ class App extends React.PureComponent {
   handleAddToCartWithBaseAttributes = (selectedProduct, selectedAttributes, price) => {
     let itemInCart;
 
-    if (this.state.cartProducts) {
-    itemInCart = this.state.cartProducts?.find(
-      product => product?.id === selectedProduct?.id &&
-      Object.values(product?.baseAttributes).toString() === Object.values(selectedAttributes).toString())
+    if (this.state.cartProducts !== []) {
+    itemInCart = this.checkIfProductIsInCart(selectedProduct, selectedAttributes);      
     } else {
       this.setState({
         cartProducts: [...this.state.cartProducts,
-          {...this.state.productInfo,
+          {...selectedProduct,
             itemCount: 1,
             imgUrlIndex: 0,
             baseColor: selectedAttributes.Color,
-            baseAttributes: selectedAttributes && (selectedAttributes),
+            baseAttributes: {...selectedAttributes},
           }],
         productCount: this.state.productCount + 1,
         quantity: this.state.quantity + 1      
@@ -156,51 +172,26 @@ class App extends React.PureComponent {
       itemInCart.price = itemInCart.price += price;
       
       this.setState({
-        cartProducts: [...this.state.cartProducts?.filter(
-          cartProduct => cartProduct?.id !== itemInCart?.id &&
-          Object.values(cartProduct?.baseAttributes).toString() === Object.values(selectedProduct?.baseAttributes)
-            .toString()), itemInCart],
+        cartProducts: [
+          ...this.state.cartProducts?.filter(cartProduct => String(
+            Array.from(Object.values(cartProduct?.baseAttributes))
+            ) !== String(
+              Array.from(Object.values(selectedAttributes))
+            )),
+          {...itemInCart, ...itemInCart.baseAttributes}
+        ],
         quantity: this.state.quantity + 1,
       });
-    } else {
+    } 
+    
+    if (!itemInCart) {
       this.setState({
         cartProducts: [...this.state.cartProducts,
           {...this.state.productInfo,
             itemCount: 1,
             imgUrlIndex: 0,
             baseColor: selectedAttributes.Color,
-            baseAttributes: selectedAttributes && (selectedAttributes),
-          }],
-        productCount: this.state.productCount + 1,
-        quantity: this.state.quantity + 1      
-      });
-    }
-  };
-
-  handleAddToCartClick = (selectedProduct, selectedAttributes, price) => {
-    const itemInCart = this.state.cartProducts
-      .find(product => product.id === selectedProduct.id && Object.values(product?.baseAttributes)
-        .toString() === Object.values(selectedAttributes)
-          .toString())
-    if (itemInCart)
-    {
-      itemInCart.itemCount++;
-      itemInCart.price = itemInCart.price += price;
-      this.setState({
-        cartProducts: [...this.state.cartProducts
-          .filter(cartProduct => cartProduct.id !== itemInCart.id && Object.values(cartProduct?.baseAttributes)
-          .toString() === Object.values(selectedProduct.baseAttributes)
-            .toString()), itemInCart],
-        quantity: this.state.quantity + 1,
-      });
-    } else {
-      this.setState({
-        cartProducts: [...this.state.cartProducts,
-          {...this.state.productInfo,
-            itemCount: 1,
-            imgUrlIndex: 0,
-            baseColor: selectedAttributes.Color,
-            baseAttributes: selectedAttributes && (selectedAttributes),
+            baseAttributes: {...selectedAttributes},
           }],
         productCount: this.state.productCount + 1,
         quantity: this.state.quantity + 1      
@@ -266,7 +257,7 @@ class App extends React.PureComponent {
 
     const productsByCategory = categoryProducts
       .filter(product => product.category === this.state.selectedCategory)
-
+    console.log(cartProducts)
     return (
       <ApolloProvider client={client}>
         <div className="App">
@@ -351,7 +342,8 @@ class App extends React.PureComponent {
                               currency={selectedCurrency}
                               onProductClick={handleProductClick}
                               onProductHover={handleProductHover}
-                              onAddToCart={handleAddToCartWithBaseAttributes}
+                              onAddToCart={handleAddToCartClick}
+                              onAddToCartIconClick={handleAddToCartWithBaseAttributes}
                             /> || <h3>{this.state.loading}</h3>
                           }
                         </div>
@@ -389,7 +381,7 @@ class App extends React.PureComponent {
                       products={categoryProducts}
                       selectedProductId={productInfo?.id}
                       currency={selectedCurrency}
-                      onAddToCart={handleAddToCartClick}
+                      onAddToCart={handleAddToCartWithBaseAttributes}
                       onColorSelect={handleColorSelect}
                     />
                   }

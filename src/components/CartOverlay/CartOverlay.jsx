@@ -78,7 +78,7 @@ export class CartOverlay extends React.PureComponent {
           </h2>
           <div className="Overlay-Item CartOverlay__item">
             {
-              productsInCart.length === 0
+              productsInCart?.length === 0
                 ?  (<p className="CartOverlay__empty-text">Your cart is empty</p>)
                 :  (productsInCart?.map(product => {
                   const {

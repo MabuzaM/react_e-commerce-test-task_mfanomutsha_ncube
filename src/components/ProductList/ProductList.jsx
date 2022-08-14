@@ -27,7 +27,7 @@ class ProductList extends React.PureComponent {
     const {
       products,
       currency,
-      onAddToCart,
+      onAddToCartIconClick,
       onProductClick,
       onProductHover
     } = this.props;
@@ -37,7 +37,7 @@ class ProductList extends React.PureComponent {
         currency,
         this.state.selectedId,
         this.onShowAddToCartIcon,
-        onAddToCart,
+        onAddToCartIconClick,
         onProductClick,
         onProductHover
       ));

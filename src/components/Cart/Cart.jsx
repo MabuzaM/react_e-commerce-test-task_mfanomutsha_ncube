@@ -94,8 +94,6 @@ export class Cart extends React.PureComponent {
 
     const cartTotal = calculateCartTotal(productsInCart, currency);
 
-    console.log(cartProducts);
-
     return (
       <>
         <article className="Cart">
@@ -145,7 +143,7 @@ export class Cart extends React.PureComponent {
                                           className={cn(
                                             "Item__attribute-other",
                                             "Item__attribute--cart",
-                                            {"Item__attribute-other--isActive": product.baseAttributes[attribute.name] === item.id}
+                                            {"Item__attribute-other--isActive": product.baseAttributes[attribute.name] === item.value}
                                           )}
                                           onClick={() => this.setState({item2Id: item.id})}
                                         >
