@@ -33,7 +33,7 @@ export class Navbar extends React.PureComponent {
     }).then(({loading, error, data }) => {
       this.setState({
         categories: [...this.state.categories, ...data.categories
-          .filter(category => category.name !== 'all')]
+          .filter(category => category.name)]
       })
     }) 
   }

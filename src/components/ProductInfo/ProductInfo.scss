@@ -1,6 +1,7 @@
 @import '../../../src/sassVariables';
 .ProductInfo {
   display: flex;
+  justify-content: center;
 
   &__gallery {
     display: flex;
@@ -58,6 +59,10 @@
       transform: translateY(0);
     }
   }
+
+  &__text {
+    margin-top: 20px;
+  }
 }
 
 .Item {
@@ -68,8 +73,7 @@
     max-width: 300px;
     max-height: 600px;
     padding: 20px;
-    overflow-x: auto;
-    overflow-y: auto;
+    margin-bottom: 40px;
   }
 
   &__title {
@@ -160,8 +164,8 @@
     justify-content: space-between;
     margin-top: 22px;
   }
+}
 
-  &__text {
-    margin-top: 40px;
-  }
+div > ul > li {
+  list-style: disc;
 }

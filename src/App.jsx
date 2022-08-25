@@ -1,20 +1,32 @@
 import React from 'react';
 import { Navbar } from './components/Navbar/Navbar';
 import './App.scss';
-import ProductList from './components/ProductList/ProductList';
 import { CartOverlay } from './components/CartOverlay/CartOverlay';
 import { CurrencySwitcher } from './components/CurrencySwticher/CurrencySwitcher';
 import { Cart } from './components/Cart/Cart';
 import { ApolloProvider } from 'react-apollo';
-import { ProductInfo } from './components/ProductInfo/ProductInfo';
-import { client, PRODUCTS, CURRENCIES_QUERY, CATEGORIES_QUERY } from './api/graphQL';
-import {Routes, Route, Navigate, NavLink} from 'react-router-dom';
+import ProductInfo from './components/ProductInfo/ProductInfo';
+import {
+  client,
+  GET_PRODUCTS_BY_CATEGORY,
+  CURRENCIES_QUERY,
+  CATEGORIES_QUERY,
+} from './api/graphQL';
+import {
+  Routes,
+  Route,
+  Navigate,
+  NavLink
+} from 'react-router-dom';
 import { Order } from './components/Order/Order';
 import cn from 'classnames';
+import { convertObjectToString } from './helpers/helperFunctions';
+import { ProductCard } from './components/ProductCard/ProductCard';
 
 class App extends React.PureComponent {
   state = {
     categories: [],
+    selectedId: '',
     currencies: [],
     selectedCurrency: '$',
     productInfo: null,
@@ -25,42 +37,47 @@ class App extends React.PureComponent {
     isCartVisible: false,
     isCurrencySwitcherShown: false,
     selectedCategory: '',
-    loading: '',
-    errorState: '',
+    loading: false,
+    errorState: false,
   }
 
    componentDidMount() {
     client.query({
-      query: PRODUCTS,
-    }).then(({ loading, error, data }) => {
-      if (loading && !data) this.setState({loading: 'Please wait while we fetch your products!'})
-      if (error) this.setState({errorState: `Oops! Something went wrong with fetching products: ${error}`})
-      this.setState({
-        categoryProducts: data.category.products
-      })
-    })
-
-    client.query({
       query: CURRENCIES_QUERY,
     }).then(({loading, error, data }) => {
-      if (loading && !data) this.setState({loading: 'Please wait while we fetch currencies!'})
-      if (error) this.setState({errorState: `Oops! Something went wrong with fetching currencies: ${error}`})
+      if (loading && !data) this.setState({loading: true})
+      if (error) this.setState({errorState: true})
       this.setState({currencies: data.currencies})
     })
 
     client.query({
       query: CATEGORIES_QUERY,
     }).then(({loading, error, data }) => {
-      if (loading && !data) this.setState({loading: 'Please wait while we fetch categories!'})
-      if (error) this.setState({errorState: `Oops! Something went wrong with fetching categories: ${error}`})
+      if (loading && !data) this.setState({loading: true})
+      if (error) this.setState({errorState: true})
       this.setState({
         categories: [...this.state.categories, ...data.categories
-          .filter(category => category.name !== 'all')]
+          .filter(category => category.name)]
       })
     })  
   }
 
-  componentDidUpdate(prevState) {
+  componentDidUpdate() {
+    if(this.state.selectedCategory !== '' && this.state.selectedCategory !== 'home') {
+      client.query(
+        {
+          query: GET_PRODUCTS_BY_CATEGORY
+        },
+      ).then(({ loading, error, data }) => {
+        if (loading && !data) this.setState({loading: true})
+        if (error) this.setState({errorState: true})
+
+        this.setState({
+          categoryProducts: data.category.products
+        })
+      })
+    }
+
     if (this.state.cartProducts.find(product => product.id === this.state.productInfo.id)) {
       this.setState({
         isInCart: true,
@@ -72,6 +89,7 @@ class App extends React.PureComponent {
     this.setState({
       selectedCurrency: event.target.id,
       isCartVisible: false,
+      isCurrencySwitcherShown: false,
     });
   }
 
@@ -86,16 +104,11 @@ class App extends React.PureComponent {
   checkIfProductIsInCart = (selectedProduct, selectedAttributes) => {
     if (this.state.cartProducts !== []) {
       return this.state.cartProducts?.find(
-        product => product.id === selectedProduct.id &&
-        String(Array.from(Object.values(
-          product?.baseAttributes
-        ))) === String(Array.from(Object.values(
-          selectedAttributes
-        )))
+        product => (product.id + convertObjectToString(product?.baseAttributes) === selectedProduct.id + convertObjectToString(selectedAttributes)) 
       )        
     }
 
-    return null;
+    return;
   }
 
   handleProductClick = (selectedProduct, allAttributes) => {
@@ -148,11 +161,7 @@ class App extends React.PureComponent {
   }
 
   handleAddToCartWithBaseAttributes = (selectedProduct, selectedAttributes, price) => {
-    let itemInCart;
-
     if (this.state.cartProducts !== []) {
-    itemInCart = this.checkIfProductIsInCart(selectedProduct, selectedAttributes);      
-    } else {
       this.setState({
         cartProducts: [...this.state.cartProducts,
           {...selectedProduct,
@@ -166,25 +175,21 @@ class App extends React.PureComponent {
       });
     }
 
-    if (itemInCart)
-    {
-      itemInCart.itemCount++;
-      itemInCart.price = itemInCart.price += price;
+    const itemInCart = this.checkIfProductIsInCart(selectedProduct, selectedAttributes); 
+
+    if (itemInCart) {
+      const updatedProduct = {...itemInCart};
+      updatedProduct.itemCount++;
+      updatedProduct.price += price;
       
       this.setState({
-        cartProducts: [
-          ...this.state.cartProducts?.filter(cartProduct => String(
-            Array.from(Object.values(cartProduct?.baseAttributes))
-            ) !== String(
-              Array.from(Object.values(selectedAttributes))
-            )),
-          {...itemInCart, ...itemInCart.baseAttributes}
-        ],
-        quantity: this.state.quantity + 1,
+        cartProducts: [...this.state.cartProducts.filter(cartProduct => (
+          cartProduct.id !== updatedProduct.id
+            && convertObjectToString(cartProduct?.baseAttributes) !== convertObjectToString(updatedProduct.baseAttributes)
+        )), {...updatedProduct}],
       });
-    } 
-    
-    if (!itemInCart) {
+
+    } else {
       this.setState({
         cartProducts: [...this.state.cartProducts,
           {...this.state.productInfo,
@@ -203,10 +208,13 @@ class App extends React.PureComponent {
     this.setState({colorId: colorId})
   };
 
-  removeItemFromCart = (itemInCart) => {
+  removeItemFromCart = (itemInCart) => { 
     this.setState({
-      cartProducts: [ ...this.state.cartProducts
-        .filter(cartProduct => cartProduct?.id !== itemInCart?.id)]
+      cartProducts: [...this.state.cartProducts
+        .filter(cartProduct => {
+          return cartProduct?.id !== itemInCart?.id &&
+            convertObjectToString(cartProduct?.baseAttributes) !== convertObjectToString(itemInCart?.baseAttributes)
+        })]
     })
   }
 
@@ -226,10 +234,15 @@ class App extends React.PureComponent {
     this.setState({selectedCategory: categoryName});
   }
 
+  handleShowAddToCartIcon = (id) => {
+    this.setState({selectedId: id});
+  }
+
   render() {
     const {
       categories,
       currencies,
+      selectedId,
       selectedCurrency,
       productInfo,
       cartProducts,
@@ -253,11 +266,18 @@ class App extends React.PureComponent {
       handleHideCurrencySwitcher,
       handleProductHover,
       handleRouteChange,
+      handleShowAddToCartIcon,
     } = this;
 
-    const productsByCategory = categoryProducts
-      .filter(product => product.category === this.state.selectedCategory)
-    console.log(cartProducts)
+    let productsByCategory = [];
+
+    if (selectedCategory === 'all') {
+      productsByCategory = [...categoryProducts]
+    } else {
+      productsByCategory = categoryProducts
+        .filter(product => product.category === this.state.selectedCategory)
+    }
+
     return (
       <ApolloProvider client={client}>
         <div className="App">
@@ -336,15 +356,17 @@ class App extends React.PureComponent {
                       <>
                         <h1 className="App__heading">{`${selectedCategory}`}</h1>
                         <div className="App__products">
-                          {      
-                            <ProductList
+                          {
+                            <ProductCard
                               products={productsByCategory}
                               currency={selectedCurrency}
+                              selectedProductId={selectedId}
+                              onShowAddToCartIcon={handleShowAddToCartIcon}
                               onProductClick={handleProductClick}
                               onProductHover={handleProductHover}
                               onAddToCart={handleAddToCartClick}
                               onAddToCartIconClick={handleAddToCartWithBaseAttributes}
-                            /> || <h3>{this.state.loading}</h3>
+                            />
                           }
                         </div>
                       </>
@@ -375,7 +397,7 @@ class App extends React.PureComponent {
                 />
 
                 <Route
-                  path={`/productid/:${productInfo?.id}`}
+                  path={`/product/:id`}
                   element={
                     <ProductInfo
                       products={categoryProducts}

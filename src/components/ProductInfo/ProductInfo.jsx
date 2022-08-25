@@ -5,7 +5,7 @@ import cn from 'classnames';
 import { renderPrice, checkOtherAttributesAndColor } from '../../helpers/helperFunctions';
 import { sanitize } from 'dompurify';
 
-export class ProductInfo extends React.PureComponent {
+class ProductInfo extends React.PureComponent {
   state = {
     product: null,
     productFromServer: null,
@@ -20,7 +20,10 @@ export class ProductInfo extends React.PureComponent {
     super(props)
     props = {
       currency: "$",
+      products: '',
+      selectedProductId: '',
       onAddToCart: () => undefined,
+      onColorSelect: () => undefined
     }
   }
 
@@ -93,7 +96,7 @@ export class ProductInfo extends React.PureComponent {
             "ProductInfo__success-message",
             {"ProductInfo__success-message--visible": isVisible}
           )}>
-            Successfully dded to cart
+            Added to cart
           </p>
 
           <h3 className="Item__title">{product?.name}</h3>
@@ -185,3 +188,5 @@ export class ProductInfo extends React.PureComponent {
     </article>);
   }
 }
+
+export default ProductInfo;

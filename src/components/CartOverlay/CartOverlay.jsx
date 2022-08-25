@@ -159,7 +159,7 @@ export class CartOverlay extends React.PureComponent {
                             }}
                           >
                             {
-                              product.itemCount === 1
+                              product?.itemCount === 1
                                 ? (<img src={recycle} alt='recycle' className="Overlay-Item__remove-icon"/>)
                                 : ('-')
                             }

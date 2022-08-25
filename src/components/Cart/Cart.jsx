@@ -3,7 +3,7 @@ import { CartButton } from '../CartButton/CartButton';
 import './Cart.scss';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
-import { calculateCartTotal, renderPrice, getItemsTotal } from '../../helpers/helperFunctions';
+import { calculateCartTotal, renderPrice, getItemsTotal, convertObjectToString } from '../../helpers/helperFunctions';
 import recycle from '../../icons-svg/recycle.png';
 import classNames from 'classnames';
 
@@ -30,23 +30,6 @@ export class Cart extends React.PureComponent {
     })
   }
 
-  decrementItemCount = (cartItem, itemPrice) => {
-    const itemInCart = this.state.cartProducts.find(product => product.id === cartItem.id);
-
-    if (itemInCart && itemInCart.itemCount >= 2) {
-      itemInCart.itemCount--;
-      itemInCart.price = itemInCart.price -= itemPrice;
-      this.setState({
-        cartProducts: [...this.state.cartProducts.filter(cartProduct => cartProduct.id !== itemInCart.id), itemInCart],
-        itemQuant: this.state.itemQuant - 1,
-      });
-
-      this.props.changeCartQuantity(this.state.itemQuant);
-    } else {
-      this.props.onDeleteItem(itemInCart);
-    }
-  }
-
   incrementItemCount = (cartItem, itemPrice) => {
     const itemInCart = this.state.cartProducts.find(product => product.id === cartItem.id);
 
@@ -59,6 +42,27 @@ export class Cart extends React.PureComponent {
       });
 
       this.props.changeCartQuantity(this.state.itemQuant);
+    }
+  }
+
+  decrementItemCount = (cartItem, itemPrice) => {
+    const itemInCart = this.state.cartProducts.find(product => (
+      product.id === cartItem.id && convertObjectToString(product.baseAttributes) === convertObjectToString(cartItem.baseAttributes)
+    ));
+
+    if (itemInCart && itemInCart.itemCount >= 2) {
+      itemInCart.itemCount--;
+      itemInCart.price = itemInCart.price -= itemPrice;
+      this.setState({
+        cartProducts: [...this.state.cartProducts
+          .filter(cartProduct => cartProduct.id !== itemInCart.id
+          && convertObjectToString(cartProduct.baseAttributes) !== convertObjectToString(cartItem.baseAttributes)), itemInCart],
+        itemQuant: this.state.itemQuant - 1,
+      });
+
+      this.props.changeCartQuantity(this.state.itemQuant);
+    } else {
+      this.props.onDeleteItem(itemInCart);
     }
   }
 

@@ -43,6 +43,76 @@ export const PRODUCTS = gql`
   }
 `
 
+export const getProductsByCategory = (input) => {
+  return gql`
+    query Category($input: CategoryInput!) {
+      category(input: $input) {
+        name = "clothes"
+        products {
+          id
+          name
+          inStock
+          gallery
+          description
+          category
+          attributes {
+            id
+            name
+            type
+            items {
+              displayValue
+              value
+              id
+            }
+          }
+          prices {
+            currency {
+              label
+              symbol
+            }
+            amount
+          }
+          brand
+        }
+      }
+    }
+  `;
+}
+
+export const GET_PRODUCTS_BY_CATEGORY = gql`
+  query Category($input: CategoryInput) {
+    category(input: $input) {
+      name
+      products {
+        id
+        name
+        inStock
+        gallery
+        description
+        category
+        attributes {
+          id
+          name
+          type
+          items {
+            displayValue
+            value
+            id
+          }
+        }
+        prices {
+          currency {
+            label
+            symbol
+          }
+          amount
+        }
+        brand
+      }
+    }
+  }
+`;
+
 export const CURRENCIES_QUERY = gql`
   {
     currencies {
@@ -52,17 +122,11 @@ export const CURRENCIES_QUERY = gql`
   }
 `
 
-export const client = new ApolloClient({
-  link: createHttpLink({ uri: 'http://localhost:4000/' }),
-  cache: new InMemoryCache()
-});
-
-export const getProduct = `
-  {
-    product(id: productId) {
+export const GET_PRODUCT_BY_ID = gql`
+  query Category($productId: String!) {
+    product(id: $productId) {
       id
-      name    
-      brand
+      name
       inStock
       gallery
       description
@@ -72,9 +136,9 @@ export const getProduct = `
         name
         type
         items {
-          displayValue
-          value
           id
+          value
+          displayValue
         }
       }
       prices {
@@ -84,6 +148,12 @@ export const getProduct = `
         }
         amount
       }
+      brand
     }
   }
 `
+
+export const client = new ApolloClient({
+  link: createHttpLink({ uri: 'http://localhost:4000/' }),
+  cache: new InMemoryCache()
+});
