@@ -13,6 +13,7 @@ export class ProductCard extends React.PureComponent {
       currency: '$',
       selectedProductId: '',
       onShowAddToCartIcon: () => undefined,
+      onHideAddToCartIcon: () => undefined,
       onAddToCartIconClick: () => undefined,
       getProduct: () => undefined,
       onProductHover: () => undefined,
@@ -25,6 +26,7 @@ export class ProductCard extends React.PureComponent {
       currency,
       selectedProductId,
       onShowAddToCartIcon,
+      onHideAddToCartIcon,
       onAddToCartIconClick,
       getProduct,
       onProductHover,
@@ -52,6 +54,7 @@ export class ProductCard extends React.PureComponent {
               onShowAddToCartIcon(id);
               onProductHover(product, baseAttributes);
             }}
+            onMouseLeave={() => onHideAddToCartIcon('')}
           >
             <Link
               to={`/product/${id}`}

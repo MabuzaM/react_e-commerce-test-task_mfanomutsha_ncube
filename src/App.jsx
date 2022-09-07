@@ -232,9 +232,14 @@ class App extends React.PureComponent {
 
   handleRouteChange = (categoryName) => {
     this.setState({selectedCategory: categoryName});
+    console.log(categoryName)
   }
 
   handleShowAddToCartIcon = (id) => {
+    this.setState({selectedId: id});
+  }
+
+  handleHideAddToCartIcon = (id) => {
     this.setState({selectedId: id});
   }
 
@@ -261,6 +266,7 @@ class App extends React.PureComponent {
       removeItemFromCart,
       handleColorSelect,
       handleShowCartOverlay,
+      handleHideAddToCartIcon,
       handleHideCartOverlay,
       handleShowCurrencySwitcher,
       handleHideCurrencySwitcher,
@@ -362,6 +368,7 @@ class App extends React.PureComponent {
                               currency={selectedCurrency}
                               selectedProductId={selectedId}
                               onShowAddToCartIcon={handleShowAddToCartIcon}
+                              onHideAddToCartIcon={handleHideAddToCartIcon}
                               onProductClick={handleProductClick}
                               onProductHover={handleProductHover}
                               onAddToCart={handleAddToCartClick}
