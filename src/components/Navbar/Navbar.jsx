@@ -65,7 +65,7 @@ export class Navbar extends React.PureComponent {
                     hideCartOverlay();
                   }}
                 >
-                  <NavLink to={name} className="Nav__link">
+                  <NavLink to={`/${name}`} className="Nav__link">
                     {
                       name && (name)
                     }

@@ -4,10 +4,16 @@ import '../CartButton/CartButton.scss'
 import cn from 'classnames';
 import { renderPrice, checkOtherAttributesAndColor } from '../../helpers/helperFunctions';
 import { sanitize } from 'dompurify';
+import {
+  client,
+  GET_PRODUCT_BY_ID,
+} from '../../api/graphQL';
 
 class ProductInfo extends React.PureComponent {
   state = {
     product: null,
+    errorState: false,
+    loading: false,
     productFromServer: null,
     id: '',
     imageSrc: '',
@@ -20,7 +26,7 @@ class ProductInfo extends React.PureComponent {
     super(props)
     props = {
       currency: "$",
-      products: '',
+      // products: '',
       selectedProductId: '',
       onAddToCart: () => undefined,
       onColorSelect: () => undefined
@@ -28,12 +34,27 @@ class ProductInfo extends React.PureComponent {
   }
 
   componentDidMount() {
-    if (this.props.products) {
-      this.setState({product: {...this.props.products.find(product => {
-        this.setState({imageSrc: product.gallery[0]})
-        return product.id === this.props.selectedProductId
-      })}})
-    }
+    const { selectedProductId } = this.props;
+    client.query(
+      {query: GET_PRODUCT_BY_ID, variables: {productId: selectedProductId}}
+    ).then(({ loading, error, data }) => {
+      if (loading && !data) this.setState({loading: true})
+      if (error) this.setState({errorState: true})
+      console.log(data.category.product)
+      this.setState({imageSrc: data.category.product.gallery[0]})
+      this.setState({
+        product: data.category.product
+      })
+    })
+
+
+
+    // if (this.props.products) {
+    //   this.setState({product: {...this.props.products.find(product => {
+    //     this.setState({imageSrc: product.gallery[0]})
+    //     return product.id === this.props.selectedProductId
+    //   })}})
+    // }
   }
 
   colorIdSetter = (id) => {
@@ -64,6 +85,8 @@ class ProductInfo extends React.PureComponent {
     } = this;
 
     const sanitizer = sanitize;
+
+    console.log(product);
 
     return (
       <article className="ProductInfo">

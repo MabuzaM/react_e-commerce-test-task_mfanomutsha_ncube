@@ -1,5 +1,4 @@
-import { ApolloClient, gql, InMemoryCache } from 'apollo-boost';
-import { createHttpLink } from 'apollo-link-http';
+import { ApolloClient, gql, InMemoryCache } from '@apollo/client';
 
 export const CATEGORIES_QUERY = gql`
   {
@@ -43,13 +42,12 @@ export const PRODUCTS = gql`
   }
 `
 
-export const getProductsByCategory = (input) => {
-  return gql`
-    query Category($input: CategoryInput!) {
-      category(input: $input) {
-        name = "clothes"
-        products {
-          id
+export const GET_PRODUCTS_BY_CATEGORY = gql`
+  query GET_PRODUCTS_BY_CATEGORY($input: CategoryInput) {
+    category(input: $input) {
+      name
+      products {
+        id
           name
           inStock
           gallery
@@ -73,41 +71,6 @@ export const getProductsByCategory = (input) => {
             amount
           }
           brand
-        }
-      }
-    }
-  `;
-}
-
-export const GET_PRODUCTS_BY_CATEGORY = gql`
-  query Category($input: CategoryInput) {
-    category(input: $input) {
-      name
-      products {
-        id
-        name
-        inStock
-        gallery
-        description
-        category
-        attributes {
-          id
-          name
-          type
-          items {
-            displayValue
-            value
-            id
-          }
-        }
-        prices {
-          currency {
-            label
-            symbol
-          }
-          amount
-        }
-        brand
       }
     }
   }
@@ -123,7 +86,7 @@ export const CURRENCIES_QUERY = gql`
 `
 
 export const GET_PRODUCT_BY_ID = gql`
-  query Category($productId: String!) {
+  query Product($productId: String!) {
     product(id: $productId) {
       id
       name
@@ -136,9 +99,9 @@ export const GET_PRODUCT_BY_ID = gql`
         name
         type
         items {
-          id
-          value
           displayValue
+          value
+          id
         }
       }
       prices {
@@ -154,6 +117,6 @@ export const GET_PRODUCT_BY_ID = gql`
 `
 
 export const client = new ApolloClient({
-  link: createHttpLink({ uri: 'http://localhost:4000/' }),
+  uri: 'http://localhost:4000/',
   cache: new InMemoryCache()
 });

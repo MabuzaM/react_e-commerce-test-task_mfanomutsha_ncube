@@ -4,7 +4,7 @@ import './App.scss';
 import { CartOverlay } from './components/CartOverlay/CartOverlay';
 import { CurrencySwitcher } from './components/CurrencySwticher/CurrencySwitcher';
 import { Cart } from './components/Cart/Cart';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/client';
 import ProductInfo from './components/ProductInfo/ProductInfo';
 import {
   client,
@@ -59,30 +59,28 @@ class App extends React.PureComponent {
         categories: [...this.state.categories, ...data.categories
           .filter(category => category.name)]
       })
-    })  
+    })
   }
 
   componentDidUpdate() {
-    if(this.state.selectedCategory !== '' && this.state.selectedCategory !== 'home') {
-      client.query(
-        {
-          query: GET_PRODUCTS_BY_CATEGORY
-        },
-      ).then(({ loading, error, data }) => {
-        if (loading && !data) this.setState({loading: true})
-        if (error) this.setState({errorState: true})
-
-        this.setState({
-          categoryProducts: data.category.products
-        })
-      })
-    }
+    const { selectedCategory } = this.state;
 
     if (this.state.cartProducts.find(product => product.id === this.state.productInfo.id)) {
       this.setState({
         isInCart: true,
       });
     }
+
+    client.query(
+      {query: GET_PRODUCTS_BY_CATEGORY, variables: {input: {title: this.state.selectedCategory}}}
+    ).then(({ loading, error, data }) => {
+      if (loading && !data) this.setState({loading: true})
+      if (error) this.setState({errorState: true})
+
+      this.setState({
+        categoryProducts: data.category.products
+      })
+    })
   }
 
   handleSelectClick = (event) => {
@@ -232,7 +230,17 @@ class App extends React.PureComponent {
 
   handleRouteChange = (categoryName) => {
     this.setState({selectedCategory: categoryName});
-    console.log(categoryName)
+
+  //   client.query(
+  //     {query: GET_PRODUCTS_BY_CATEGORY, variables: {input: {title: this.state.selectedCategory}}}
+  // ).then(({ loading, error, data }) => {
+  //   if (loading && !data) this.setState({loading: true})
+  //   if (error) this.setState({errorState: true})
+
+  //   this.setState({
+  //     categoryProducts: data.category.products
+  //   })
+  // })
   }
 
   handleShowAddToCartIcon = (id) => {
@@ -281,7 +289,6 @@ class App extends React.PureComponent {
       productsByCategory = [...categoryProducts]
     } else {
       productsByCategory = categoryProducts
-        .filter(product => product.category === this.state.selectedCategory)
     }
 
     return (
@@ -341,7 +348,7 @@ class App extends React.PureComponent {
                             <NavLink
                               to={`/${name}`} 
                               className="App__links Nav__link"
-                              onClick={() => handleRouteChange(name)}
+                              // onClick={() => this.setState({selectedCategory: name})}
                               key={name}
                             >
                               {
@@ -357,23 +364,27 @@ class App extends React.PureComponent {
 
                 {
                   <Route
-                    path={`/${selectedCategory}`}
+                    path="/:selectedCategory"
                     element={
                       <>
                         <h1 className="App__heading">{`${selectedCategory}`}</h1>
                         <div className="App__products">
-                          {
-                            <ProductCard
-                              products={productsByCategory}
-                              currency={selectedCurrency}
-                              selectedProductId={selectedId}
-                              onShowAddToCartIcon={handleShowAddToCartIcon}
-                              onHideAddToCartIcon={handleHideAddToCartIcon}
-                              onProductClick={handleProductClick}
-                              onProductHover={handleProductHover}
-                              onAddToCart={handleAddToCartClick}
-                              onAddToCartIconClick={handleAddToCartWithBaseAttributes}
-                            />
+                          {productsByCategory.map(product => {
+                            return (
+                              <ProductCard
+                                selectedCategory={selectedCategory}
+                                product={product}
+                                currency={selectedCurrency}
+                                selectedProductId={selectedId}
+                                onShowAddToCartIcon={handleShowAddToCartIcon}
+                                onHideAddToCartIcon={handleHideAddToCartIcon}
+                                onProductClick={handleProductClick}
+                                onProductHover={handleProductHover}
+                                onAddToCart={handleAddToCartClick}
+                                onAddToCartIconClick={handleAddToCartWithBaseAttributes}
+                              />
+                            )
+                          })
                           }
                         </div>
                       </>
@@ -404,10 +415,10 @@ class App extends React.PureComponent {
                 />
 
                 <Route
-                  path={`/product/:id`}
+                  path={`/${selectedCategory}/:productId`}
                   element={
                     <ProductInfo
-                      products={categoryProducts}
+                      // products={categoryProducts}
                       selectedProductId={productInfo?.id}
                       currency={selectedCurrency}
                       onAddToCart={handleAddToCartWithBaseAttributes}

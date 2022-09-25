@@ -4,12 +4,22 @@ import { renderPrice } from '../../helpers/helperFunctions';
 import { Link } from 'react-router-dom';
 import cn from 'classnames';
 import AddToCartIcon from '../../icons-svg/addToCartIcon.svg';
+import {
+  client,
+  GET_PRODUCTS_BY_CATEGORY,
+} from '../../api/graphQL';
 
 export class ProductCard extends React.PureComponent {
+  state = {
+    categoryProducts: [],
+    loading: false,
+    errorState: false,
+  }
   constructor (props) {
     super(props);
     props = {
-      products: [],
+      product: null,
+      selectedCategory: '',
       currency: '$',
       selectedProductId: '',
       onShowAddToCartIcon: () => undefined,
@@ -22,7 +32,8 @@ export class ProductCard extends React.PureComponent {
 
   render() {
     const {
-      products,
+      product,
+      selectedCategory,
       currency,
       selectedProductId,
       onShowAddToCartIcon,
@@ -32,13 +43,15 @@ export class ProductCard extends React.PureComponent {
       onProductHover,
     } = this.props;
 
-    return products.map((product) => {
+    const { categoryProducts } = this.state;
+
       const {
         id,
         gallery,
         prices,
         name,
         brand,
+        category,
       } = product;
   
       const baseAttributes = product?.attributes?.reduce((allBaseAttributes, attribute) => ({
@@ -57,7 +70,7 @@ export class ProductCard extends React.PureComponent {
             onMouseLeave={() => onHideAddToCartIcon('')}
           >
             <Link
-              to={`/product/${id}`}
+              to={`/${category}/${id}`}
               className={cn("ProductCard__link")}
               onClick={() => getProduct(product, baseAttributes)}
             >
@@ -104,6 +117,5 @@ export class ProductCard extends React.PureComponent {
             />
           </div>
       );
-    })
   }
 }
