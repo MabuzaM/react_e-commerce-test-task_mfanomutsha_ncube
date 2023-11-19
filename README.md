@@ -1,5 +1,5 @@
 # Minimalistic E-Commerce App Test Task
-- This is a test task for a juniour front-end developer position. Completed using the following tools/techs.
+- This is a test task for a junior front-end developer position. Completed using the following tools/techs.
 - Implemented according to figma design.
 
 ## Instructions to run the project
